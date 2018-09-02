@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!-- This is the activity which is shown in recipeView (Second page),
+ Here only steps Short description is needed which is shown in the steps rv)-->
+
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stepsShortDescription"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:layout_marginBottom="16dp"
+    android:textAlignment="center" />
