@@ -11,7 +11,23 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class GetHTTPResponse {
-    public static String getResponseFromHttpVideo(URL url) throws IOException {
+    public String getResponseFromHttpVideo(URL url) throws IOException {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         HttpURLConnection aurlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream ainputStream = aurlConnection.getInputStream();
@@ -27,6 +43,7 @@ public class GetHTTPResponse {
         } finally {
             aurlConnection.disconnect();
         }
+
     }
 
     public static URL parseUrl(String urlInput) {

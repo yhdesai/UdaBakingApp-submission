@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -24,11 +25,26 @@ import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 
 public class StepsView extends AppCompatActivity {
+    private SimpleExoPlayer player;
+    private SimpleExoPlayerView VideoView;
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        long position = player.getCurrentPosition();
+        savedInstanceState.putLong("position", position);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_view);
+
+        if (savedInstanceState != null) {
+            long position = savedInstanceState.getLong("position");
+            if (position != C.TIME_UNSET) player.seekTo(position);
+
+        }
 
         /*  String ids = getIntent().getStringExtra("id");*/
         String description = getIntent().getStringExtra("description");
@@ -43,9 +59,8 @@ public class StepsView extends AppCompatActivity {
       /*  TextView videoView = findViewById(R.id.videoVideoView);
         TextView thumbnailView = findViewById(R.id.videoThumbnailView);*/
 
-        SimpleExoPlayerView VideoView = findViewById(R.id.videoView);
 
-
+        VideoView = findViewById(R.id.videoView);
         VideoView.setVisibility(View.GONE);
 
 
@@ -53,95 +68,78 @@ public class StepsView extends AppCompatActivity {
             Log.d("Thattt Thumbnail", thumbnailUrl);
             Uri uri = Uri.parse(thumbnailUrl);
             VideoView.setVisibility(View.VISIBLE);
-
-            // 1. Create a default TrackSelector
-            Handler mainHandler = new Handler();
-            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-            TrackSelection.Factory videoTrackSelectionFactory =
-                    new AdaptiveTrackSelection.Factory(bandwidthMeter);
-            DefaultTrackSelector trackSelector =
-                    new DefaultTrackSelector(videoTrackSelectionFactory);
-
-// 2. Create the player
-            SimpleExoPlayer player =
-                    ExoPlayerFactory.newSimpleInstance(this, trackSelector);
-
-            // Bind the player to the view.
-            VideoView.setPlayer(player);
-
-
-// Produces DataSource instances through which media data is loaded.
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
-                    Util.getUserAgent(this, "yourApplicationName"), (TransferListener<? super DataSource>) bandwidthMeter);
-// This is the MediaSource representing the media to be played.
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(uri);
-// Prepare the player with the source.
-            player.prepare(videoSource);
-
-            // Add a listener to receive events from the player.
-            //     player.addListener(eventListener);
-
-
-
-            /*  videoView.setText(videoUrl);*/
+            initPlayer(uri);
         } else {
-            /* videoView.setVisibility(View.GONE);*/
             VideoView.setVisibility(View.GONE);
-
         }
-
         if (videoUrl != null) {
             Log.d("Thattt Video", videoUrl);
             Uri uri = Uri.parse(videoUrl);
             VideoView.setVisibility(View.VISIBLE);
-
-            // 1. Create a default TrackSelector
-            Handler mainHandler = new Handler();
-            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-            TrackSelection.Factory videoTrackSelectionFactory =
-                    new AdaptiveTrackSelection.Factory(bandwidthMeter);
-            DefaultTrackSelector trackSelector =
-                    new DefaultTrackSelector(videoTrackSelectionFactory);
-
-// 2. Create the player
-            SimpleExoPlayer player =
-                    ExoPlayerFactory.newSimpleInstance(this, trackSelector);
-
-            // Bind the player to the view.
-            VideoView.setPlayer(player);
-
-
-// Produces DataSource instances through which media data is loaded.
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
-                    Util.getUserAgent(this, "yourApplicationName"), (TransferListener<? super DataSource>) bandwidthMeter);
-// This is the MediaSource representing the media to be played.
-            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(uri);
-// Prepare the player with the source.
-            player.prepare(videoSource);
-
-            // Add a listener to receive events from the player.
-            //     player.addListener(eventListener);
-
-
-            Log.d("videourl", videoUrl);
-            /*  videoView.setText(videoUrl);*/
+            initPlayer(uri);
         } else {
             /* videoView.setVisibility(View.GONE);*/
             VideoView.setVisibility(View.GONE);
 
-        }
-
-
-
-
-
-        /*  idView.setText(ids);*/
+        }   /*  idView.setText(ids);*/
         descriptionView.setText(description);
     /*    videoView.setText(videoUrl);
         thumbnailView.setText(thumbnailUrl);*/
         setTitle(shortDescription);
+    }
+
+    private void initPlayer(Uri uri) {
+        // 1. Create a default TrackSelector
+        Handler mainHandler = new Handler();
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        DefaultTrackSelector trackSelector =
+                new DefaultTrackSelector(videoTrackSelectionFactory);
+        // 2. Create the player
+        player =
+                ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+
+        // Bind the player to the view.
+        VideoView.setPlayer(player);
+        // Produces DataSource instances through which media data is loaded.
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
+                Util.getUserAgent(this, "bakingApp"), (TransferListener<? super DataSource>) bandwidthMeter);
+        // This is the MediaSource representing the media to be played.
+        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(uri);
+        // Prepare the player with the source.
+        player.prepare(videoSource);
+
+        // Add a listener to receive events from the player.
+        //     player.addListener(eventListener);
 
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+            player = null;
+        }
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            player.release();
+            player = null;
+
+        }
+
+    }
+
 }
