@@ -13,7 +13,11 @@
         android:layout_height="175dp"
         android:visibility="gone" />
 
-
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/thumbnailView"
+        android:layout_width="wrap_content"
+        android:layout_height="175dp"
+        android:visibility="gone" />
 
 
     <TextView

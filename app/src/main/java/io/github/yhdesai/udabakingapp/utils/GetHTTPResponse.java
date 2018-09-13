@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class GetHTTPResponse {
-    public String getResponseFromHttpVideo(URL url) throws IOException {
+    public static String getResponseFromHttpVideo(URL url) throws IOException {
 
 
 

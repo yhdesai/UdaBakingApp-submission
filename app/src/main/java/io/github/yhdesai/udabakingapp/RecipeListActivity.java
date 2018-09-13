@@ -20,11 +20,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.github.yhdesai.udabakingapp.data.Recipe;
-import io.github.yhdesai.udabakingapp.utils.GetHTTPResponse;
-
 import java.io.IOException;
 import java.net.URL;
+
+import io.github.yhdesai.udabakingapp.data.Recipe;
+import io.github.yhdesai.udabakingapp.utils.GetHTTPResponse;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -85,17 +85,18 @@ public  class RecipeListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
         private final RecipeListActivity mParentActivity;
-        private Recipe[] mRecipe = null;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Recipe item = (Recipe) view.getTag();
                 if (mTwoPane) {
-                    Bundle arguments = new Bundle();
+                    // Bundle arguments = new Bundle();
                    // arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item);
+                    //TODO Fix this code here,,  fixed it but gonna leave this todo here as a mark for future
+                    Stash.put("recipe_to_frag_tab", item);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
-                    fragment.setArguments(arguments);
+                    //  fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.recipe_detail_container, fragment)
                             .commit();
@@ -110,6 +111,7 @@ public  class RecipeListActivity extends AppCompatActivity {
                 }
             }
         };
+        private Recipe[] mRecipe;
 
         RecipeAdapter(RecipeListActivity parent,
                       Recipe[] recipe,
@@ -153,7 +155,7 @@ public  class RecipeListActivity extends AppCompatActivity {
             ViewHolder(View view) {
                 super(view);
                 //mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.item_recipe_title);
+                mContentView = view.findViewById(R.id.item_recipe_title);
             }
         }
     }

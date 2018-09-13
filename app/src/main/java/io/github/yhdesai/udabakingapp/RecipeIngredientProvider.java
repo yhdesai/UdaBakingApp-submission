@@ -4,7 +4,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.fxn.stash.Stash;
@@ -28,7 +27,7 @@ public class RecipeIngredientProvider extends AppWidgetProvider {
          ingreTitle = Stash.getString("INGRE_TITLE");
          ingreString = Stash.getString("INGRE_CONTENT");
          views.setTextViewText(R.id.appwidget_title, ingreTitle);
-         //TODO fix this
+
          views.setTextViewText(R.id.appwidget_ingredients, ingreString);
        //  Log.d("updateAppWidgetIngre", ingre);
 

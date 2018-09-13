@@ -13,7 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.fxn.stash.Stash;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,18 +110,20 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         String steps = mRecipe.getSteps();
 
 
+        ImageView recipe_detail = getActivity().findViewById(R.id.recipe_detail_image);
+        Picasso.get().load(image).into(recipe_detail);
+
         //    TextView nameTextView = activity.findViewById(R.id.);
 
         // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
-        //    TextView servingsTextView = Objects.requireNonNull(getActivity()).findViewById(R.id.rv_servings);
+        TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
+        servingsTextView.setText(servings);
 
-
-//        servingsTextView.setText(servings);
 
         new StepsFetchTask().execute(steps);
         new IngredientsFetchTask().execute(ingredients);
-     //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
-       // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
+        //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
+        // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
 
 
     }
@@ -126,16 +132,44 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        @SuppressWarnings("UnnecessaryLocalVariable")
+
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
+        Recipe recipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+
+        if (recipe != null) {
+            String name = recipe.getName();
+            int id = recipe.getId();
+            String image = recipe.getImage();
+            String servings = recipe.getServings();
+            //   Log.d("THIIIs", servings);
+            String ingredients = recipe.getIngredients();
+
+            String steps = recipe.getSteps();
+
+
+            // Show the dummy content as text in a TextView.
        /* if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.details);
         }
 
 */ //((TextView) rootView.findViewById(R.id.)).setText(mRecipe.getName());
 
+
+            ImageView recipe_detail = rootView.findViewById(R.id.recipe_detail_image);
+            Picasso.get().load(image).into(recipe_detail);
+
+            //    TextView nameTextView = activity.findViewById(R.id.);
+
+            // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
+            TextView servingsTextView = rootView.findViewById(R.id.rv_servings);
+            servingsTextView.setText(servings);
+
+
+            new StepsFetchTask().execute(steps);
+            new IngredientsFetchTask().execute(ingredients);
+
+        }
 
         return rootView;
     }

@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.util.Util;
 public class StepsView extends AppCompatActivity {
     private SimpleExoPlayer player;
     private SimpleExoPlayerView VideoView;
+    private SimpleExoPlayerView ThumbnailView;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -63,14 +64,17 @@ public class StepsView extends AppCompatActivity {
         VideoView = findViewById(R.id.videoView);
         VideoView.setVisibility(View.GONE);
 
+        ThumbnailView = findViewById(R.id.thumbnailView);
+        ThumbnailView.setVisibility(View.GONE);
+
 
         if (thumbnailUrl != null) {
             Log.d("Thattt Thumbnail", thumbnailUrl);
             Uri uri = Uri.parse(thumbnailUrl);
-            VideoView.setVisibility(View.VISIBLE);
+            ThumbnailView.setVisibility(View.VISIBLE);
             initPlayer(uri);
         } else {
-            VideoView.setVisibility(View.GONE);
+            ThumbnailView.setVisibility(View.GONE);
         }
         if (videoUrl != null) {
             Log.d("Thattt Video", videoUrl);
@@ -81,11 +85,14 @@ public class StepsView extends AppCompatActivity {
             /* videoView.setVisibility(View.GONE);*/
             VideoView.setVisibility(View.GONE);
 
-        }   /*  idView.setText(ids);*/
+        }
+        /*  idView.setText(ids);*/
         descriptionView.setText(description);
-    /*    videoView.setText(videoUrl);
+        /* videoView.setText(videoUrl);
         thumbnailView.setText(thumbnailUrl);*/
         setTitle(shortDescription);
+
+
     }
 
     private void initPlayer(Uri uri) {
