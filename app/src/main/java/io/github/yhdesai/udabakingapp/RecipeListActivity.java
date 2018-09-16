@@ -34,16 +34,17 @@ import io.github.yhdesai.udabakingapp.utils.GetHTTPResponse;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public  class RecipeListActivity extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity {
 
-    /**-----------------------
+    Recipe[] result12;
+    Recipe recipe234;
+    RecipeAdapter recipeAdapter;
+    /**
+     * -----------------------
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
-    Recipe[] result12;
-    Recipe recipe234;
-    RecipeAdapter recipeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +68,7 @@ public  class RecipeListActivity extends AppCompatActivity {
       /*  View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);*/
-
-
-
         String uri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-
-
-
         new RecipeFetchTask().execute(uri);
     }
 
@@ -81,7 +76,7 @@ public  class RecipeListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new RecipeAdapter(this, result12, mTwoPane));
     }
 
-    public  class RecipeAdapter
+    public class RecipeAdapter
             extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
         private final RecipeListActivity mParentActivity;
@@ -92,7 +87,7 @@ public  class RecipeListActivity extends AppCompatActivity {
                 Recipe item = (Recipe) view.getTag();
                 if (mTwoPane) {
                     // Bundle arguments = new Bundle();
-                   // arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item);
+                    // arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item);
                     //TODO Fix this code here,,  fixed it but gonna leave this todo here as a mark for future
                     Stash.put("recipe_to_frag_tab", item);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
@@ -103,7 +98,7 @@ public  class RecipeListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
 
-                    Recipe recipe = (Recipe)view.getTag();
+                    Recipe recipe = (Recipe) view.getTag();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
 
                     intent.putExtra("MyClass", recipe);
@@ -112,6 +107,7 @@ public  class RecipeListActivity extends AppCompatActivity {
             }
         };
         private Recipe[] mRecipe;
+
 
         RecipeAdapter(RecipeListActivity parent,
                       Recipe[] recipe,
@@ -237,7 +233,7 @@ public  class RecipeListActivity extends AppCompatActivity {
                 mRecipeRecyclerView.setAdapter(recipeAdapter);
 */
 
-             //   Log.d("recipeAdapter", recipeAdapter.toString());
+                //   Log.d("recipeAdapter", recipeAdapter.toString());
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
             }

@@ -83,8 +83,10 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            listState = savedInstanceState.getParcelable("ListState");
 
-        listState = savedInstanceState.getParcelable("ListState");
+        }
 
         //  if (getArguments().containsKey(ARG_ITEM_ID)) {
         // Load the dummy content specified by the fragment
@@ -109,19 +111,27 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         String steps = mRecipe.getSteps();
 
-
-        ImageView recipe_detail = getActivity().findViewById(R.id.recipe_detail_image);
-        Picasso.get().load(image).into(recipe_detail);
-
+//        if (image != null) {
+//            Log.d("IMage", image);
+//            ImageView recipe_detail = getActivity().findViewById(R.id.recipe_detail_image);
+//            Picasso.get().load(image).into(recipe_detail);
+//        }
         //    TextView nameTextView = activity.findViewById(R.id.);
 
         // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
-        TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
-        servingsTextView.setText(servings);
 
+        if (servings != null) {
+            TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
+            servingsTextView.setText(servings);
 
-        new StepsFetchTask().execute(steps);
-        new IngredientsFetchTask().execute(ingredients);
+            if (steps != null) {
+                new StepsFetchTask().execute(steps);
+            }
+            if (ingredients != null) {
+                new IngredientsFetchTask().execute(ingredients);
+            }
+        }
+
         //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
         // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
 
