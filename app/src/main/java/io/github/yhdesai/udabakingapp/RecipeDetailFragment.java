@@ -58,6 +58,8 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
     private Parcelable listState;
 
+    String servings;
+
     private RecyclerView stepsRecyclerView;
 
 
@@ -105,7 +107,8 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         String name = mRecipe.getName();
         int id = mRecipe.getId();
         String image = mRecipe.getImage();
-        String servings = mRecipe.getServings();
+
+        servings = mRecipe.getServings();
         //   Log.d("THIIIs", servings);
         String ingredients = mRecipe.getIngredients();
 
@@ -120,17 +123,22 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
 
-        if (servings != null) {
-            TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
-            servingsTextView.setText(servings);
+        //    if (servings != null) {
 
-            if (steps != null) {
-                new StepsFetchTask().execute(steps);
-            }
-            if (ingredients != null) {
-                new IngredientsFetchTask().execute(ingredients);
-            }
+        //     }
+
+        Log.d("The Activity", activity.toString());
+        if (steps != null) {
+            new StepsFetchTask().execute(steps);
         }
+        if (ingredients != null) {
+            new IngredientsFetchTask().execute(ingredients);
+        }
+
+      /*  TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
+        servingsTextView.setText(servings);*/
+
+
 
         //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
         // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
@@ -155,7 +163,8 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             //   Log.d("THIIIs", servings);
             String ingredients = recipe.getIngredients();
 
-            String steps = recipe.getSteps();
+            String steps;
+            steps = recipe.getSteps();
 
 
             // Show the dummy content as text in a TextView.
@@ -432,7 +441,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
 
                 stepsRecyclerView = Objects.requireNonNull(getActivity()).findViewById(R.id.rv_steps);
-
                 stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
@@ -442,6 +450,11 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
                /* ingredientsAdapter = new IngredientsAdapter(ingredientsItemss, MainActivity.this, MainActivity.this);
                 mRecipeRecyclerView.setAdapter(recipeAdapter);*/
                 // Log.d("recipeAdapter", stepsAdapter.toString());
+
+                TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
+                servingsTextView.setText(servings);
+
+                //TODO Hey, I need some help here, Can you please explain why this wouldnt worked when placed on line 138?
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
             }
