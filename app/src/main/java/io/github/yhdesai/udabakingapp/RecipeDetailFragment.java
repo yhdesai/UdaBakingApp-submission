@@ -95,9 +95,10 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         // arguments. In a real-world scenario, use a Loader
         // to load content from a content provider.
         // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        Bundle bundle = getArguments();
-        assert bundle != null;
-        mRecipe = (Recipe) bundle.getSerializable("recipeObject");
+        Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+
+
+        /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
         Activity activity = this.getActivity();
         assert activity != null;
         CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
@@ -176,8 +177,11 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
 
             ImageView recipe_detail = rootView.findViewById(R.id.recipe_detail_image);
-            Picasso.get().load(image).into(recipe_detail);
 
+            if (!image.isEmpty()) {
+             Log.d("image", image);
+                Picasso.get().load(image).into(recipe_detail);
+            }
             //    TextView nameTextView = activity.findViewById(R.id.);
 
             // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
