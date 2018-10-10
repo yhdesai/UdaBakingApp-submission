@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.C;
@@ -16,6 +17,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.DebugTextViewHelper;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -23,34 +25,45 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 public class StepsView extends AppCompatActivity {
     private SimpleExoPlayer player;
     private SimpleExoPlayerView VideoView;
-    private SimpleExoPlayerView ThumbnailView;
+    private ImageView ThumbnailView;
+    private Boolean Video;
+    public String videoUrl;
+    private Uri uri;
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        long position = player.getCurrentPosition();
-        savedInstanceState.putLong("position", position);
+        Log.d("onSaveInstance", savedInstanceState.toString());
+
+        if (Video = true) {
+            Log.d("The Player", player.toString());
+            long position = player.getCurrentPosition();
+            savedInstanceState.putLong("position", position);
+
+            boolean isPlayWhenReady = player.getPlayWhenReady();
+            savedInstanceState.putBoolean("playerState", isPlayWhenReady);
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_view);
+        Video = false;
 
-        if (savedInstanceState != null) {
-            long position = savedInstanceState.getLong("position");
-            if (position != C.TIME_UNSET) player.seekTo(position);
 
-        }
 
         /*  String ids = getIntent().getStringExtra("id");*/
         String description = getIntent().getStringExtra("description");
         String shortDescription = getIntent().getStringExtra("shortDescription");
-        String videoUrl = getIntent().getStringExtra("videoUrl");
+
+        videoUrl = getIntent().getStringExtra("videoUrl");
         String thumbnailUrl = getIntent().getStringExtra("thumbnailUrl");
 
 
@@ -68,34 +81,46 @@ public class StepsView extends AppCompatActivity {
         ThumbnailView.setVisibility(View.GONE);
 
 
-        if (thumbnailUrl != null) {
+        if (!thumbnailUrl.equals("")) {
             Log.d("Thattt Thumbnail", thumbnailUrl);
-            Uri uri = Uri.parse(thumbnailUrl);
+            Log.d("thumbnail", "meow");
             ThumbnailView.setVisibility(View.VISIBLE);
-            initPlayer(uri);
+            Picasso.get().load(thumbnailUrl).into(ThumbnailView);
         } else {
+
             ThumbnailView.setVisibility(View.GONE);
         }
-        if (videoUrl != null) {
+
+
+        if (!videoUrl.equals("")) {
             Log.d("Thattt Video", videoUrl);
-            Uri uri = Uri.parse(videoUrl);
+            uri = Uri.parse(videoUrl);
             VideoView.setVisibility(View.VISIBLE);
-            initPlayer(uri);
+            Video = true;
+            initPlayer();
         } else {
-            /* videoView.setVisibility(View.GONE);*/
+            Video = false;
             VideoView.setVisibility(View.GONE);
 
         }
         /*  idView.setText(ids);*/
         descriptionView.setText(description);
-        /* videoView.setText(videoUrl);
-        thumbnailView.setText(thumbnailUrl);*/
         setTitle(shortDescription);
 
+        if (savedInstanceState != null) {
+            long position = savedInstanceState.getLong("position");
+            initPlayer();
+            if (position != C.TIME_UNSET) player.seekTo(position);
 
+
+            boolean isPlayWhenReady = savedInstanceState.getBoolean("playerState");
+            player.setPlayWhenReady(isPlayWhenReady);
+
+
+        }
     }
 
-    private void initPlayer(Uri uri) {
+    private void initPlayer() {
         // 1. Create a default TrackSelector
         Handler mainHandler = new Handler();
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -124,11 +149,16 @@ public class StepsView extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (videoUrl != null)
+            uri = Uri.parse(videoUrl);
+      //  initPlayer(uri);
+    }
+    @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
+      //  releasePlayer();
     }
 
     @Override
@@ -136,17 +166,19 @@ public class StepsView extends AppCompatActivity {
         super.onStop();
         if (Util.SDK_INT <= 23) {
             releasePlayer();
-            player = null;
+
         }
     }
 
     private void releasePlayer() {
         if (player != null) {
+
+            player.stop();
             player.release();
             player = null;
 
         }
-
     }
+
 
 }
