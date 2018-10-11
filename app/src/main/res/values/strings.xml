@@ -8,4 +8,6 @@
     <string name="servings">SERVINGS:</string>
     <string name="_0">0</string>
     <string name="steps">steps:</string>
+    <string name="title_step_list">Steps</string>
+    <string name="title_step_detail">Step Detail</string>
 </resources>

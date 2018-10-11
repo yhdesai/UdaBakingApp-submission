@@ -41,7 +41,22 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_ingredient_provider_info" />
         </receiver>
+
         <service android:name=".WidgetUpdateService" />
+
+        <activity
+            android:name=".StepListActivity"
+            android:label="@string/title_step_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".StepDetailActivity"
+            android:label="@string/title_step_detail"
+            android:parentActivityName=".StepListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.github.yhdesai.udabakingapp.StepListActivity" />
+        </activity>
     </application>
 
 </manifest>
