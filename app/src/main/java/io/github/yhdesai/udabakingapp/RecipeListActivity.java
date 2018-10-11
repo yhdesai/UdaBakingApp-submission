@@ -95,6 +95,7 @@ public class RecipeListActivity extends AppCompatActivity {
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.recipe_detail_container, fragment)
                             .commit();
+                    Stash.put("mTwoPane", mTwoPane);
                 } else {
                     Context context = view.getContext();
 
@@ -103,6 +104,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
                     intent.putExtra("MyClass", recipe);
                     context.startActivity(intent);
+                    Stash.put("mTwoPane", mTwoPane);
                 }
             }
         };

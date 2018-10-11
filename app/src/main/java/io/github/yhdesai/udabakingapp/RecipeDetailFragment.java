@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
     String servings;
 
     private RecyclerView stepsRecyclerView;
+    private boolean mTwoPane;
 
 
     /**
@@ -95,12 +97,33 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         // arguments. In a real-world scenario, use a Loader
         // to load content from a content provider.
         // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-      /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
+        /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
 
-        Bundle bundle = getArguments();
-        assert bundle != null;
-        mRecipe = (Recipe) bundle.getSerializable("recipeObject");
+        if (getActivity().findViewById(R.id.recipe_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+       //     mTwoPane = true;
+            mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+        } else {
+        //    mTwoPane = false;
+            Bundle bundle = getArguments();
+            assert bundle != null;
+            mRecipe = (Recipe) bundle.getSerializable("recipeObject");
+        }
 
+/*
+//tab only
+        if (mTwoPane) {
+            mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+        } else {
+//android only
+            Bundle bundle = getArguments();
+            assert bundle != null;
+            mRecipe = (Recipe) bundle.getSerializable("recipeObject");
+        }
+*/
 
         /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
         Activity activity = this.getActivity();
@@ -147,7 +170,14 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
         // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
-
+        /*Button stepsButton = getActivity().findViewById(R.id.stepsButton);
+        stepsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent activityChangeIntent = new Intent(getActivity(), StepListActivity.class);
+                startActivity(activityChangeIntent);
+            }
+        });*/
 
     }
 
@@ -195,8 +225,8 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
             new StepsFetchTask().execute(steps);
             new IngredientsFetchTask().execute(ingredients);
-
         }
+
 
         return rootView;
     }
@@ -468,4 +498,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
 
     }
+
+
 }

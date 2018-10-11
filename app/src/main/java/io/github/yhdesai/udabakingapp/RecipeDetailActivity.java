@@ -6,10 +6,12 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.fxn.stash.Stash;
@@ -31,6 +33,15 @@ public class RecipeDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+
+        Button stepsButton = findViewById(R.id.stepsButton);
+        stepsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent activityChangeIntent = new Intent(RecipeDetailActivity.this, StepListActivity.class);
+                startActivity(activityChangeIntent);
+            }
+        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -89,6 +100,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -101,12 +113,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
             //
             navigateUpTo(new Intent(this, RecipeListActivity.class));
             return true;
+        } else{
+            Log.d("id", String.valueOf(id));
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void steps(View view) {
-      startActivity(new Intent(RecipeDetailActivity.this, StepListActivity.class));
 
-    }
 }

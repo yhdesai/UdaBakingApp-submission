@@ -262,7 +262,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             new RecipeFetchTask().cancel(true);
             if (recipes != null) {
 
-                View recyclerView = findViewById(R.id.step_list);
+                View recyclerView = findViewById(R.id.stepss_list);
                 assert recyclerView != null;
                 setupRecyclerView((RecyclerView) recyclerView);
 
@@ -348,7 +348,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                 }*/
 
 
-                stepsRecyclerView = Objects.requireNonNull(StepListActivity.this).findViewById(R.id.rv_stepss);
+                stepsRecyclerView =findViewById(R.id.rv_stepss);
                 stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
 
 
