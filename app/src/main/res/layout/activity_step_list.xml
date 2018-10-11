@@ -24,11 +24,21 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
         <include layout="@layout/step_list" />
     </FrameLayout>
 
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="test"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_stepss"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </android.support.design.widget.CoordinatorLayout>

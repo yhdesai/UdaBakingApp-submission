@@ -1,7 +1,5 @@
 package io.github.yhdesai.udabakingapp;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 import com.fxn.stash.Stash;
 
 import io.github.yhdesai.udabakingapp.data.Recipe;
-import io.github.yhdesai.udabakingapp.utils.utils;
 
 /**
  * An activity representing a single Recipe detail screen. This
@@ -110,5 +107,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     public void steps(View view) {
       startActivity(new Intent(RecipeDetailActivity.this, StepListActivity.class));
+
     }
 }

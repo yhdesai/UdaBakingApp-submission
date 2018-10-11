@@ -134,6 +134,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         Log.d("The Activity", activity.toString());
         if (steps != null) {
+            Stash.put("steps", steps);
             new StepsFetchTask().execute(steps);
         }
         if (ingredients != null) {

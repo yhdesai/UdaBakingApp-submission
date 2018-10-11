@@ -2,7 +2,7 @@
 
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_recipe_title"
+    android:id="@+id/item_step_title"
     android:layout_width="match_parent"
     android:textAlignment="center"
     android:layout_height="75dp"
