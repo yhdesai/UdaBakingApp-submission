@@ -9,6 +9,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,16 +99,32 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         // to load content from a content provider.
         // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
-
-        if (getActivity().findViewById(R.id.recipe_detail_container) != null) {
+/*
+        if (getActivity().findViewById(R.id.step_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
        //     mTwoPane = true;
+            Log.d("device", "tab detected");
             mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
         } else {
         //    mTwoPane = false;
+            Log.d("device", "phone detected");
+            Bundle bundle = getArguments();
+            assert bundle != null;
+            mRecipe = (Recipe) bundle.getSerializable("recipeObject");
+        }*/
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        float yInches= metrics.heightPixels/metrics.ydpi;
+        float xInches= metrics.widthPixels/metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
+        if (diagonalInches>=6.5){
+            mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+        }else{
             Bundle bundle = getArguments();
             assert bundle != null;
             mRecipe = (Recipe) bundle.getSerializable("recipeObject");
