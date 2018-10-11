@@ -95,16 +95,20 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         // arguments. In a real-world scenario, use a Loader
         // to load content from a content provider.
         // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+      /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
+
+        Bundle bundle = getArguments();
+        assert bundle != null;
+        mRecipe = (Recipe) bundle.getSerializable("recipeObject");
 
 
         /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
         Activity activity = this.getActivity();
         assert activity != null;
-        CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-        if (appBarLayout != null) {
+       /*   CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
+      if (appBarLayout != null) {
             appBarLayout.setTitle(mRecipe.getName());
-        }
+        }*/
         String name = mRecipe.getName();
         int id = mRecipe.getId();
         String image = mRecipe.getImage();
@@ -138,7 +142,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
       /*  TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
         servingsTextView.setText(servings);*/
-
 
 
         //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
@@ -179,7 +182,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             ImageView recipe_detail = rootView.findViewById(R.id.recipe_detail_image);
 
             if (!image.isEmpty()) {
-             Log.d("image", image);
+                Log.d("image", image);
                 Picasso.get().load(image).into(recipe_detail);
             }
             //    TextView nameTextView = activity.findViewById(R.id.);
@@ -457,8 +460,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
                 TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
                 servingsTextView.setText(servings);
-
-                //TODO Hey, I need some help here, Can you please explain why this wouldnt worked when placed on line 138?
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
             }
