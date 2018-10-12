@@ -119,12 +119,13 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        float yInches= metrics.heightPixels/metrics.ydpi;
+       float yInches= metrics.heightPixels/metrics.ydpi;
         float xInches= metrics.widthPixels/metrics.xdpi;
         double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
-        if (diagonalInches>=6.5){
+
+      if (diagonalInches>=6.5){
             mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
-        }else{
+      }else{
             Bundle bundle = getArguments();
             assert bundle != null;
             mRecipe = (Recipe) bundle.getSerializable("recipeObject");
