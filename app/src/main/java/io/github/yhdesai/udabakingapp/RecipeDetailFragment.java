@@ -122,7 +122,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
        float yInches= metrics.heightPixels/metrics.ydpi;
         float xInches= metrics.widthPixels/metrics.xdpi;
         double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
-
       if (diagonalInches>=6.5){
             mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
       }else{

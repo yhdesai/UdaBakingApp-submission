@@ -6,6 +6,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
@@ -34,15 +35,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        Button stepsButton = findViewById(R.id.stepsButton);
-        stepsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                Intent activityChangeIntent = new Intent(RecipeDetailActivity.this, StepListActivity.class);
-                startActivity(activityChangeIntent);
-            }
-        });
-
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -64,8 +56,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
             Object object = getIntent().getSerializableExtra("MyClass");
             Recipe recipe = (Recipe) object;
-           Bundle recipeBundle = new Bundle();
-           recipeBundle.putSerializable("recipeObject", recipe);
+            Bundle recipeBundle = new Bundle();
+            recipeBundle.putSerializable("recipeObject", recipe);
           /*  arguments.putString("recipe",
                     getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));*/
             RecipeDetailFragment fragment = new RecipeDetailFragment();
@@ -74,8 +66,16 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     .add(R.id.recipe_detail_container, fragment)
                     .commit();
         }
+        Button stepsButton = findViewById(R.id.stepsButton);
+        stepsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent activityChangeIntent = new Intent(RecipeDetailActivity.this, StepListActivity.class);
+                startActivity(activityChangeIntent);
+            }
+        });
 
-     FloatingActionButton fab =findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,10 +83,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 //getting title
 
                 CollapsingToolbarLayout appBarLayout = findViewById(R.id.toolbar_layout);
-               // if (appBarLayout != null) {
-                    String strings = appBarLayout.getTitle().toString();
-
-
+                // if (appBarLayout != null) {
+                String strings = appBarLayout.getTitle().toString();
 
 
                 TextView textView = findViewById(R.id.rv_ingredients);
@@ -113,11 +111,24 @@ public class RecipeDetailActivity extends AppCompatActivity {
             //
             navigateUpTo(new Intent(this, RecipeListActivity.class));
             return true;
-        } else{
+        } else {
             Log.d("id", String.valueOf(id));
         }
         return super.onOptionsItemSelected(item);
     }
+   /*  public void steps(View view) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
+        float yInches= metrics.heightPixels/metrics.ydpi;
+        float xInches= metrics.widthPixels/metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
+        if (diagonalInches>=6.5){
+            startActivity(new Intent(RecipeDetailActivity.this, StepDetailActivity.class));
+        }else{
+            Log.d("Weird", "this is weird");
+
+        }
+    }*/
 
 }
