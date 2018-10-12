@@ -82,12 +82,18 @@ public class StepsView extends AppCompatActivity {
 
 
         if (!thumbnailUrl.equals("")) {
-            Log.d("Thattt Thumbnail", thumbnailUrl);
-            Log.d("thumbnail", "meow");
-            ThumbnailView.setVisibility(View.VISIBLE);
-            Picasso.get().load(thumbnailUrl).into(ThumbnailView);
-        } else {
+            if (!thumbnailUrl.contains(".mp4")) {
+                Log.d("Thumbnail", "image detected");
+                ThumbnailView.setVisibility(View.VISIBLE);
+                Picasso.get().load(thumbnailUrl).into(ThumbnailView);
 
+            }if (thumbnailUrl.contains(".mp4")){
+                Log.d("Thumbnail", "thumbnail is not an image");
+
+            }
+
+        } else {
+            Log.d("Thumbnail", "thumbnail empty");
             ThumbnailView.setVisibility(View.GONE);
         }
 
