@@ -73,9 +73,9 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
     public RecipeDetailFragment() {
     }
 
-   /* private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new StepsAdapter(this, resultStepsArray, null));
-    }*/
+
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -93,62 +93,39 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         }
 
-        //  if (getArguments().containsKey(ARG_ITEM_ID)) {
-        // Load the dummy content specified by the fragment
-        // arguments. In a real-world scenario, use a Loader
-        // to load content from a content provider.
-        // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
-/*
-        if (getActivity().findViewById(R.id.step_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-       //     mTwoPane = true;
-            Log.d("device", "tab detected");
-            mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
-        } else {
-        //    mTwoPane = false;
-            Log.d("device", "phone detected");
-            Bundle bundle = getArguments();
-            assert bundle != null;
-            mRecipe = (Recipe) bundle.getSerializable("recipeObject");
-        }*/
 
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-       float yInches= metrics.heightPixels/metrics.ydpi;
-        float xInches= metrics.widthPixels/metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
-      if (diagonalInches>=6.5){
+        float yInches = metrics.heightPixels / metrics.ydpi;
+        float xInches = metrics.widthPixels / metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+        if (diagonalInches >= 6.5) {
+            //TAB ONLY
             mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
-      }else{
+            if (mRecipe != null) {
+                Log.d("recipe", "got from first one");
+            } else {
+                Log.d("recipe", "first recipe is null");
+            }
+        } else {
+            //ANDROID ONLY
             Bundle bundle = getArguments();
             assert bundle != null;
             mRecipe = (Recipe) bundle.getSerializable("recipeObject");
+
+            if (mRecipe != null) {
+                Log.d("recipe", "got from second one");
+            } else {
+                Log.d("recipe", "second recipe is null");
+            }
         }
 
-/*
-//tab only
-        if (mTwoPane) {
-            mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
-        } else {
-//android only
-            Bundle bundle = getArguments();
-            assert bundle != null;
-            mRecipe = (Recipe) bundle.getSerializable("recipeObject");
-        }
-*/
 
         /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
         Activity activity = this.getActivity();
         assert activity != null;
-       /*   CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-      if (appBarLayout != null) {
-            appBarLayout.setTitle(mRecipe.getName());
-        }*/
+
         String name = mRecipe.getName();
         int id = mRecipe.getId();
         String image = mRecipe.getImage();
@@ -159,19 +136,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         String steps = mRecipe.getSteps();
 
-//        if (image != null) {
-//            Log.d("IMage", image);
-//            ImageView recipe_detail = getActivity().findViewById(R.id.recipe_detail_image);
-//            Picasso.get().load(image).into(recipe_detail);
-//        }
-        //    TextView nameTextView = activity.findViewById(R.id.);
-
-        // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
-
-        //    if (servings != null) {
-
-        //     }
-
         Log.d("The Activity", activity.toString());
         if (steps != null) {
             Stash.put("steps", steps);
@@ -181,20 +145,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             new IngredientsFetchTask().execute(ingredients);
         }
 
-      /*  TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
-        servingsTextView.setText(servings);*/
 
-
-        //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
-        // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
-        /*Button stepsButton = getActivity().findViewById(R.id.stepsButton);
-        stepsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                Intent activityChangeIntent = new Intent(getActivity(), StepListActivity.class);
-                startActivity(activityChangeIntent);
-            }
-        });*/
 
     }
 
@@ -205,8 +156,8 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
 
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
 
-        Recipe recipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
-
+        // Recipe recipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+        Recipe recipe = mRecipe;
         if (recipe != null) {
             String name = recipe.getName();
             int id = recipe.getId();
@@ -219,12 +170,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             steps = recipe.getSteps();
 
 
-            // Show the dummy content as text in a TextView.
-       /* if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.details);
-        }
 
-*/ //((TextView) rootView.findViewById(R.id.)).setText(mRecipe.getName());
 
 
             ImageView recipe_detail = rootView.findViewById(R.id.recipe_detail_image);
@@ -233,16 +179,22 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
                 Log.d("image", image);
                 Picasso.get().load(image).into(recipe_detail);
             }
-            //    TextView nameTextView = activity.findViewById(R.id.);
-
-            // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
-            TextView servingsTextView = rootView.findViewById(R.id.rv_servings);
+              TextView servingsTextView = rootView.findViewById(R.id.rv_servings);
             servingsTextView.setText(servings);
 
 
             new StepsFetchTask().execute(steps);
             new IngredientsFetchTask().execute(ingredients);
         }
+
+       Button mhheButtonn = rootView.findViewById(R.id.meowButton);
+        mhheButtonn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent activityChangeIntent = new Intent(getActivity(), StepListActivity.class);
+                startActivity(activityChangeIntent);
+            }
+        });
 
 
         return rootView;
@@ -266,88 +218,10 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
     }
 
 
-   /* private void setupStepsRecyclerView(@NonNull RecyclerView recyclerView, StepsItem[] stepsItems) {
-        recyclerView.setAdapter(new StepsAdapter(RecipeDetailFragment.this, stepsItems));
-
-    }
-*/
-
-    /*public class StepsAdapter
-            extends RecyclerView.Adapter<StepsAdapter.StepsHolder> {
-
-        private final RecipeDetailFragment mParentActivity;
-        private StepsItem[] mSteps;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //  StepsItem steps = (StepsItem) view.getTag();
-
-                //   Context context = view.getContext();
-
-                // Intent intent = new Intent(context, RecipeDetailActivity.class);
-                // intent.putExtra("MySteps", steps);
-                //   context.startActivity(intent);
-
-            }
-        };
-
-        StepsAdapter(RecipeDetailFragment parent,
-                     StepsItem[] steps
-        ) {
-            Log.d("step 2 from stepadapter", steps[1].toString());
-            mSteps = steps;
-            mParentActivity = parent;
-        }
 
 
-        @Override
-        public StepsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_steps, parent, false);
-            return new StepsHolder(view);
-        }
 
 
-        @Override
-        public void onBindViewHolder(final StepsHolder holder, int position) {
-            StepsItem stepsItem = mSteps[position];
-            Log.d("input onbindstepHolder", mSteps[position].toString().toString());
-
-            holder.mId.setText(stepsItem.getId());
-            holder.mShortDescription.setText(stepsItem.getDescription());
-            holder.mDescription.setText(stepsItem.getDescription());
-            holder.mThumbnailUrl.setText(stepsItem.getThumbnailURL());
-            holder.mVideoUrl.setText(stepsItem.getVideoURL());
-
-            holder.itemView.setTag(mSteps[position]);
-            holder.itemView.setOnClickListener(mOnClickListener);
-
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mSteps.length;
-        }
-
-        class StepsHolder extends RecyclerView.ViewHolder {
-            final TextView mId;
-            final TextView mShortDescription;
-            final TextView mDescription;
-            final TextView mVideoUrl;
-            final TextView mThumbnailUrl;
-
-
-            StepsHolder(View view) {
-                super(view);
-                mId = view.findViewById(R.id.stepsId);
-                mShortDescription = view.findViewById(R.id.stepsShortDescription);
-                mDescription = view.findViewById(R.id.stepsDescription);
-                mVideoUrl = view.findViewById(R.id.stepsVideoUrl);
-                mThumbnailUrl = view.findViewById(R.id.stepsThumbnailUrl);
-            }
-        }
-    }*/
 
 
     public class IngredientsFetchTask extends AsyncTask<String, Void, IngredientsItem[]> {
@@ -413,16 +287,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
                     ingredientsTextView.setText(formerText + "\n" + quantity + " " + measure + " " + ingredient);
 
 
-                    /*  Log.d("onposteecute", recipes.toString());*/
 
-                    /* mStepsRecyclerView.setVisibility(View.VISIBLE);*/
-
-               /* stepsAdapter = new StepsAdapter(stepsItems, RecipeView.this, RecipeView.this);
-                mStepsRecyclerView.setAdapter(stepsAdapter);*/
-
-               /* ingredientsAdapter = new IngredientsAdapter(ingredientsItemss, MainActivity.this, MainActivity.this);
-                mRecipeRecyclerView.setAdapter(recipeAdapter);*/
-                    //  Log.d("recipeAdapter", stepsAdapter.toString());
                 }
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
@@ -490,9 +355,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             new StepsFetchTask().cancel(true);
             // Log.d("mewow", stepsItems.toString());
             if (stepsItems != null) {
-               /* for (int i = 0; i < stepsItems.length; i++) {
-                    Log.d("going to stepsAdapter", stepsItems[i].getDescription());
-                }*/
 
 
                 stepsRecyclerView = Objects.requireNonNull(getActivity()).findViewById(R.id.rv_steps);
@@ -502,17 +364,12 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
                 stepsAdapter = new StepsAdapter(stepsItems, RecipeDetailFragment.this);
                 stepsRecyclerView.setAdapter(stepsAdapter);
 
-               /* ingredientsAdapter = new IngredientsAdapter(ingredientsItemss, MainActivity.this, MainActivity.this);
-                mRecipeRecyclerView.setAdapter(recipeAdapter);*/
-                // Log.d("recipeAdapter", stepsAdapter.toString());
-
                 TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
                 servingsTextView.setText(servings);
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
             }
         }
-
 
     }
 

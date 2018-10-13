@@ -41,12 +41,12 @@
         android:layout_height="fill_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <Button
+  <!--  <Button
         android:id="@+id/stepsButton"
         android:layout_width="wrap_content"
         android:layout_gravity="end|center"
         android:layout_height="wrap_content"
-        android:text="steps" />
+        android:text="steps" />-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

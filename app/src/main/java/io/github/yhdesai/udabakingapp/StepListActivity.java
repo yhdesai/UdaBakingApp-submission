@@ -41,8 +41,8 @@ import io.github.yhdesai.udabakingapp.utils.GetHTTPResponse;
  */
 public class StepListActivity extends AppCompatActivity implements StepsAdapter.StepsClickListener {
 
-    Recipe[] result12;
-    Recipe recipe234;
+    Recipe[] result12s;
+    Recipe recipe234s;
     RecipeAdapters recipeAdapter;
 
     private IngredientsItem[] ingredientsStepsArray;
@@ -89,14 +89,14 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
       /*  View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);*/
-        String uri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-        new RecipeFetchTask().execute(uri);
-        String steps = Stash.getString("steps");
-        new StepsFetchTask().execute(steps);
+        String uris = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+        new RecipeFetchTasks().execute(uris);
+        String stepss = Stash.getString("steps");
+        new StepsFetchTasks().execute(stepss);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new RecipeAdapters(this, result12, mTwoPane));
+        recyclerView.setAdapter(new RecipeAdapters(this, result12s, mTwoPane));
     }
 
     @Override
@@ -198,7 +198,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
     }
 
-    public class RecipeFetchTask extends AsyncTask<String, Void, Recipe[]> {
+    public class RecipeFetchTasks extends AsyncTask<String, Void, Recipe[]> {
 
 
         @Override
@@ -216,7 +216,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             try {
                 String result = GetHTTPResponse.getResponseFromHttpVideo(url);
                 JSONArray jsonArray = new JSONArray(result);
-                result12 = new Recipe[jsonArray.length()];
+                result12s = new Recipe[jsonArray.length()];
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     JSONObject object = jsonArray.getJSONObject(i);
@@ -236,17 +236,17 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                                     String.valueOf(servings) + "\n " +
                                     steps);*/
 
-                    recipe234 = new Recipe();
+                    recipe234s = new Recipe();
 
-                    recipe234.setName(name);
-                    recipe234.setImage(image);
-                    recipe234.setId(id);
-                    recipe234.setIngredients(ingredients);
-                    recipe234.setServings(String.valueOf(servings));
-                    recipe234.setSteps(steps);
+                    recipe234s.setName(name);
+                    recipe234s.setImage(image);
+                    recipe234s.setId(id);
+                    recipe234s.setIngredients(ingredients);
+                    recipe234s.setServings(String.valueOf(servings));
+                    recipe234s.setSteps(steps);
 
 
-                    result12[i] = recipe234;
+                    result12s[i] = recipe234s;
 
                 }
             } catch (JSONException | IOException e1) {
@@ -254,15 +254,16 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             }
 
 
-            return result12;
+            return result12s;
         }
 
         @Override
         protected void onPostExecute(Recipe[] recipes) {
-            new RecipeFetchTask().cancel(true);
+            new RecipeFetchTasks().cancel(true);
             if (recipes != null) {
 
-                View recyclerView = findViewById(R.id.stepss_list);
+              //  View recyclerView = findViewById(R.id.stepss_list);
+                View recyclerView = findViewById(R.id.rv_stepsss);
                 assert recyclerView != null;
                 setupRecyclerView((RecyclerView) recyclerView);
 
@@ -285,7 +286,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
     }
 
 
-    public class StepsFetchTask extends AsyncTask<String, Void, StepsItem[]> {
+    public class StepsFetchTasks extends AsyncTask<String, Void, StepsItem[]> {
 
 
         @Override
@@ -340,7 +341,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
         @Override
         protected void onPostExecute(StepsItem[] stepsItems) {
-            new StepsFetchTask().cancel(true);
+            new StepsFetchTasks().cancel(true);
             // Log.d("mewow", stepsItems.toString());
             if (stepsItems != null) {
                /* for (int i = 0; i < stepsItems.length; i++) {
@@ -348,7 +349,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                 }*/
 
 
-                stepsRecyclerView =findViewById(R.id.rv_stepss);
+                stepsRecyclerView =findViewById(R.id.rv_stepsss);
                 stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
 
 
