@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
         <activity
             android:name=".RecipeListActivity"
             android:label="@string/app_name"
@@ -21,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity
+            android:name=".StepListActivity"
+            android:label="@string/title_step_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity
             android:name=".RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
@@ -30,6 +39,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.github.yhdesai.udabakingapp.RecipeListActivity" />
         </activity>
+
+
+        <activity
+            android:name=".StepDetailActivity"
+            android:label="@string/title_step_detail"
+            android:parentActivityName=".StepListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.github.yhdesai.udabakingapp.StepListActivity" />
+        </activity>
+
+
+
         <activity android:name=".StepsView" />
 
         <receiver android:name=".RecipeIngredientProvider">
@@ -44,19 +67,8 @@
 
         <service android:name=".WidgetUpdateService" />
 
-        <activity
-            android:name=".StepListActivity"
-            android:label="@string/title_step_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
-            android:name=".StepDetailActivity"
-            android:label="@string/title_step_detail"
-            android:parentActivityName=".StepListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.yhdesai.udabakingapp.StepListActivity" />
-        </activity>
+
+
     </application>
 
 </manifest>

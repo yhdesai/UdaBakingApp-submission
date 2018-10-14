@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.fxn.stash.Stash;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,9 +59,9 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         new StepsFetchTasks().execute(stepss);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+  /*  private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new RecipeAdapters(this, result12s, mTwoPane));
-    }
+    }*/
 
     @Override
     public void onClickSteps(int position) {
@@ -69,21 +71,35 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         String videoUrl = resultStepsArray[position].getVideoURL();
         String thumbnailUrl = resultStepsArray[position].getThumbnailURL();
 
-        Intent intent = new Intent(StepListActivity.this, StepsView.class);
-        intent.putExtra("id", String.valueOf(id));
-        intent.putExtra("description", description);
-        intent.putExtra("shortDescription", shortDescription);
-        intent.putExtra("videoUrl", videoUrl);
-        intent.putExtra("thumbnailUrl", thumbnailUrl);
-        startActivity(intent);
-    }
 
+        if (mTwoPane) {
+            Log.d("mTwoPane", "steps mTwoPane Detected");
+
+            //Stash.put("recipe_to_frag_tab", item);
+            StepDetailFragment fragment = new StepDetailFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.step_detail_container, fragment)
+                    .commit();
+            Stash.put("mTwoPane", mTwoPane);
+
+        } else {
+            Intent intent = new Intent(StepListActivity.this, StepsView.class);
+            intent.putExtra("id", String.valueOf(id));
+            intent.putExtra("description", description);
+            intent.putExtra("shortDescription", shortDescription);
+            intent.putExtra("videoUrl", videoUrl);
+            intent.putExtra("thumbnailUrl", thumbnailUrl);
+            startActivity(intent);
+            Stash.put("mTwoPane", mTwoPane);
+        }
+    }
+/*
     public class RecipeAdapters
             extends RecyclerView.Adapter<RecipeAdapters.ViewHolder> {
 
         private final StepListActivity mParentActivity;
         private final boolean mTwoPane;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        *//*private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Recipe item = (Recipe) view.getTag();
@@ -106,13 +122,13 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                     Stash.put("mTwoPane", mTwoPane);
                 }
             }
-        };
+        };*//*
         private Recipe[] mRecipe;
 
 
         RecipeAdapters(StepListActivity parent,
-                      Recipe[] recipe,
-                      boolean twoPane) {
+                       Recipe[] recipe,
+                       boolean twoPane) {
             mRecipe = recipe;
             mParentActivity = parent;
             mTwoPane = twoPane;
@@ -132,15 +148,17 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             String text = recipe1234.getName();
             holder.mContentView.setText(text);
             holder.itemView.setTag(mRecipe[position]);
-            holder.itemView.setOnClickListener(mOnClickListener);
+            //   holder.itemView.setOnClickListener(mOnClickListener);
         }
 
         @Override
         public int getItemCount() {
             return mRecipe.length;
         }
+
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mContentView;
+
             ViewHolder(View view) {
                 super(view);
                 mContentView = view.findViewById(R.id.item_step_title);
@@ -148,14 +166,14 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         }
 
 
-    }
+    }*/
 
 
     public class StepsFetchTasks extends AsyncTask<String, Void, StepsItem[]> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-   }
+        }
 
         @Override
         protected StepsItem[] doInBackground(String... strings) {
@@ -194,7 +212,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         protected void onPostExecute(StepsItem[] stepsItems) {
             new StepsFetchTasks().cancel(true);
             if (stepsItems != null) {
-                stepsRecyclerView =findViewById(R.id.rv_stepsss);
+                stepsRecyclerView = findViewById(R.id.rv_stepsss);
                 stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
                 stepsAdapter = new StepsAdapter(stepsItems, StepListActivity.this);
                 stepsRecyclerView.setAdapter(stepsAdapter);
