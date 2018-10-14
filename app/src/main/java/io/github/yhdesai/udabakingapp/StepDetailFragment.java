@@ -2,8 +2,10 @@ package io.github.yhdesai.udabakingapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -15,8 +17,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.fxn.stash.Stash;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.TransferListener;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -26,41 +44,31 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 import io.github.yhdesai.udabakingapp.data.IngredientsItem;
-import io.github.yhdesai.udabakingapp.data.Recipe;
 import io.github.yhdesai.udabakingapp.data.StepsItem;
 
-/**
- * A fragment representing a single Recipe detail screen.
- * This fragment is either contained in a {@link RecipeListActivity}
- * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
- * on handsets.
- */
-public class StepDetailFragment extends Fragment implements StepsAdapter.StepsClickListener {
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    // public static final String ARG_ITEM_ID = "id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private Recipe mRecipe;
+public class StepDetailFragment extends Fragment {
+
     private IngredientsItem[] ingredientsStepsArray;
     private IngredientsItem ingredientsSteps;
     private TextView ingredientsTextView;
-
     private StepsItem[] resultStepsArray;
     private StepsItem resultSteps;
     private StepsAdapter stepsAdapter;
-
     private String specialString;
-
+    private SimpleExoPlayer player;
+    public String videoUrl;
     private Parcelable listState;
-
+    private SimpleExoPlayerView VideoView;
+    private ImageView ThumbnailView;
     String servings;
-
+    private Boolean Video;
+    private Uri uri;
     private RecyclerView stepsRecyclerView;
+    String shortDescription;
+    String description;
+    String id;
+    String thumbnailUrl;
 
 
     /**
@@ -78,7 +86,6 @@ public class StepDetailFragment extends Fragment implements StepsAdapter.StepsCl
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable("ListState", stepsRecyclerView.getLayoutManager().onSaveInstanceState());
 
     }
 
@@ -86,64 +93,70 @@ public class StepDetailFragment extends Fragment implements StepsAdapter.StepsCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            listState = savedInstanceState.getParcelable("ListState");
 
+            shortDescription = Stash.getString("shortDescription");
+            description = Stash.getString("description");
+            id = Stash.getString("id");
+            videoUrl = Stash.getString("videoUrl");
+            thumbnailUrl = Stash.getString("thumbnailUrl");
+
+            Video = false;
+            Log.d("shortdesc", shortDescription);
+
+           // TextView descriptionView = getActivity().findViewById(R.id.stepsDescription);
+
+            //     VideoView = getActivity().findViewById(R.id.videoView);
+//            VideoView.setVisibility(View.GONE);
+
+            //       ThumbnailView = getActivity().findViewById(R.id.thumbnailView);
+            //   ThumbnailView.setVisibility(View.GONE);
+
+
+        /*    if (!thumbnailUrl.equals("")) {
+                if (!thumbnailUrl.contains(".mp4")) {
+                    Log.d("Thumbnail", "image detected");
+                    ThumbnailView.setVisibility(View.VISIBLE);
+                    Picasso.get().load(thumbnailUrl).into(ThumbnailView);
+
+                }
+                if (thumbnailUrl.contains(".mp4")) {
+                    Log.d("Thumbnail", "thumbnail is not an image");
+
+                }
+
+            } else {
+                Log.d("Thumbnail", "thumbnail empty");
+//                ThumbnailView.setVisibility(View.GONE);
+            }
+*/
+/*
+            if (!videoUrl.equals("")) {
+                Log.d("Thattt Video", videoUrl);
+                uri = Uri.parse(videoUrl);
+                //      VideoView.setVisibility(View.VISIBLE);
+                Video = true;
+                initPlayer();
+            } else {
+                Video = false;
+                //    VideoView.setVisibility(View.GONE);
+
+            }*/
+            /*  idView.setText(ids);*/
+//            descriptionView.setText(description);
+
+/*
+            if (savedInstanceState != null) {
+                long position = savedInstanceState.getLong("position");
+                initPlayer();
+                if (position != C.TIME_UNSET) player.seekTo(position);
+
+
+                boolean isPlayWhenReady = savedInstanceState.getBoolean("playerState");
+                player.setPlayWhenReady(isPlayWhenReady);
+
+
+            }*/
         }
-
-        //  if (getArguments().containsKey(ARG_ITEM_ID)) {
-        // Load the dummy content specified by the fragment
-        // arguments. In a real-world scenario, use a Loader
-        // to load content from a content provider.
-        // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
-
-
-        mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
-
-        /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
-        Activity activity = this.getActivity();
-        assert activity != null;
-       /*   CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-      if (appBarLayout != null) {
-            appBarLayout.setTitle(mRecipe.getName());
-        }*/
-        String name = mRecipe.getName();
-        int id = mRecipe.getId();
-        String image = mRecipe.getImage();
-
-        servings = mRecipe.getServings();
-        //   Log.d("THIIIs", servings);
-        String ingredients = mRecipe.getIngredients();
-
-        String steps = mRecipe.getSteps();
-
-//        if (image != null) {
-//            Log.d("IMage", image);
-//            ImageView recipe_detail = getActivity().findViewById(R.id.recipe_detail_image);
-//            Picasso.get().load(image).into(recipe_detail);
-//        }
-        //    TextView nameTextView = activity.findViewById(R.id.);
-
-        // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
-
-        //    if (servings != null) {
-
-        //     }
-
-        Log.d("The Activity", activity.toString());
-        if (steps != null) {
-            new StepsFetchTask().execute(steps);
-        }
-        if (ingredients != null) {
-            new IngredientsFetchTask().execute(ingredients);
-        }
-
-      /*  TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
-        servingsTextView.setText(servings);*/
-
-
-        //   Stash.put("TAG_DATA_STRING", ingredientsTextView.getText().toString());
-        // WidgetUpdateService.startActionUpdateIngredientWidget(getContext());
 
 
     }
@@ -153,316 +166,136 @@ public class StepDetailFragment extends Fragment implements StepsAdapter.StepsCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
+        View rootView = inflater.inflate(R.layout.step_detail, container, false);
 
-        Recipe recipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
+        shortDescription = Stash.getString("shortDescription");
+        description = Stash.getString("description");
+        id = Stash.getString("id");
+        videoUrl = Stash.getString("videoUrl");
+        thumbnailUrl = Stash.getString("thumbnailUrl");
 
-        if (recipe != null) {
-            String name = recipe.getName();
-            int id = recipe.getId();
-            String image = recipe.getImage();
-            String servings = recipe.getServings();
-            //   Log.d("THIIIs", servings);
-            String ingredients = recipe.getIngredients();
-
-            String steps;
-            steps = recipe.getSteps();
+        Log.d("shortdesc", shortDescription);
+        Video = false;
 
 
-            // Show the dummy content as text in a TextView.
-       /* if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.details);
-        }
+        TextView descriptionView = rootView.findViewById(R.id.stepsDescription);
 
-*/ //((TextView) rootView.findViewById(R.id.)).setText(mRecipe.getName());
+        VideoView = rootView.findViewById(R.id.videoView);
+        VideoView.setVisibility(View.GONE);
+
+        ThumbnailView = rootView.findViewById(R.id.thumbnailView);
+        //   ThumbnailView.setVisibility(View.GONE);
 
 
-            ImageView recipe_detail = rootView.findViewById(R.id.recipe_detail_image);
+        if (!thumbnailUrl.equals("")) {
+            if (!thumbnailUrl.contains(".mp4")) {
+                Log.d("Thumbnail", "image detected");
+                ThumbnailView.setVisibility(View.VISIBLE);
+                Picasso.get().load(thumbnailUrl).into(ThumbnailView);
 
-            if (!image.isEmpty()) {
-                Log.d("image", image);
-                Picasso.get().load(image).into(recipe_detail);
             }
-            //    TextView nameTextView = activity.findViewById(R.id.);
+            if (thumbnailUrl.contains(".mp4")) {
+                Log.d("Thumbnail", "thumbnail is not an image");
 
-            // TextView ingredientsTextView = activity.findViewById(R.id.rv_ingredients);
-            TextView servingsTextView = rootView.findViewById(R.id.rv_servings);
-            servingsTextView.setText(servings);
+            }
+
+        } else {
+            Log.d("Thumbnail", "thumbnail empty");
+//                ThumbnailView.setVisibility(View.GONE);
+        }
 
 
-            new StepsFetchTask().execute(steps);
-            new IngredientsFetchTask().execute(ingredients);
+        if (!videoUrl.equals("")) {
+            Log.d("Thattt Video", videoUrl);
+            uri = Uri.parse(videoUrl);
+            //      VideoView.setVisibility(View.VISIBLE);
+            Video = true;
+            initPlayer();
+        } else {
+            Video = false;
+            //    VideoView.setVisibility(View.GONE);
 
         }
+        /*  idView.setText(ids);*/
+        descriptionView.setText(description);
+
+
+        if (savedInstanceState != null) {
+            long position = savedInstanceState.getLong("position");
+            initPlayer();
+            if (position != C.TIME_UNSET) player.seekTo(position);
+
+
+            boolean isPlayWhenReady = savedInstanceState.getBoolean("playerState");
+            player.setPlayWhenReady(isPlayWhenReady);
+
+
+        }
+
 
         return rootView;
     }
 
+    private void initPlayer() {
+        // 1. Create a default TrackSelector
+        Handler mainHandler = new Handler();
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        DefaultTrackSelector trackSelector =
+                new DefaultTrackSelector(videoTrackSelectionFactory);
+        // 2. Create the player
+        player =
+                ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+
+        // Bind the player to the view.
+        VideoView.setPlayer(player);
+        // Produces DataSource instances through which media data is loaded.
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(),
+                Util.getUserAgent(getActivity(), "bakingApp"), (TransferListener<? super DataSource>) bandwidthMeter);
+        // This is the MediaSource representing the media to be played.
+        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(uri);
+        // Prepare the player with the source.
+        player.prepare(videoSource);
+
+        // Add a listener to receive events from the player.
+        //     player.addListener(eventListener);
+
+    }
+
     @Override
-    public void onClickSteps(int position) {
-        String shortDescription = resultStepsArray[position].getShortDescription();
-        String description = resultStepsArray[position].getDescription();
-        int id = resultStepsArray[position].getId();
-        String videoUrl = resultStepsArray[position].getVideoURL();
-        String thumbnailUrl = resultStepsArray[position].getThumbnailURL();
+    public void onResume() {
+        super.onResume();
+        if (videoUrl != null)
+            uri = Uri.parse(videoUrl);
+        //  initPlayer(uri);
+    }
 
-        Intent intent = new Intent(getActivity(), StepsView.class);
-        intent.putExtra("id", String.valueOf(id));
-        intent.putExtra("description", description);
-        intent.putExtra("shortDescription", shortDescription);
-        intent.putExtra("videoUrl", videoUrl);
-        intent.putExtra("thumbnailUrl", thumbnailUrl);
-        startActivity(intent);
+    @Override
+    public void onPause() {
+        super.onPause();
+        //  releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+
+        }
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+
+            player.stop();
+            player.release();
+            player = null;
+
+        }
     }
 
 
-   /* private void setupStepsRecyclerView(@NonNull RecyclerView recyclerView, StepsItem[] stepsItems) {
-        recyclerView.setAdapter(new StepsAdapter(RecipeDetailFragment.this, stepsItems));
-
-    }
-*/
-
-    /*public class StepsAdapter
-            extends RecyclerView.Adapter<StepsAdapter.StepsHolder> {
-
-        private final RecipeDetailFragment mParentActivity;
-        private StepsItem[] mSteps;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //  StepsItem steps = (StepsItem) view.getTag();
-
-                //   Context context = view.getContext();
-
-                // Intent intent = new Intent(context, RecipeDetailActivity.class);
-                // intent.putExtra("MySteps", steps);
-                //   context.startActivity(intent);
-
-            }
-        };
-
-        StepsAdapter(RecipeDetailFragment parent,
-                     StepsItem[] steps
-        ) {
-            Log.d("step 2 from stepadapter", steps[1].toString());
-            mSteps = steps;
-            mParentActivity = parent;
-        }
-
-
-        @Override
-        public StepsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_steps, parent, false);
-            return new StepsHolder(view);
-        }
-
-
-        @Override
-        public void onBindViewHolder(final StepsHolder holder, int position) {
-            StepsItem stepsItem = mSteps[position];
-            Log.d("input onbindstepHolder", mSteps[position].toString().toString());
-
-            holder.mId.setText(stepsItem.getId());
-            holder.mShortDescription.setText(stepsItem.getDescription());
-            holder.mDescription.setText(stepsItem.getDescription());
-            holder.mThumbnailUrl.setText(stepsItem.getThumbnailURL());
-            holder.mVideoUrl.setText(stepsItem.getVideoURL());
-
-            holder.itemView.setTag(mSteps[position]);
-            holder.itemView.setOnClickListener(mOnClickListener);
-
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return mSteps.length;
-        }
-
-        class StepsHolder extends RecyclerView.ViewHolder {
-            final TextView mId;
-            final TextView mShortDescription;
-            final TextView mDescription;
-            final TextView mVideoUrl;
-            final TextView mThumbnailUrl;
-
-
-            StepsHolder(View view) {
-                super(view);
-                mId = view.findViewById(R.id.stepsId);
-                mShortDescription = view.findViewById(R.id.stepsShortDescription);
-                mDescription = view.findViewById(R.id.stepsDescription);
-                mVideoUrl = view.findViewById(R.id.stepsVideoUrl);
-                mThumbnailUrl = view.findViewById(R.id.stepsThumbnailUrl);
-            }
-        }
-    }*/
-
-
-    public class IngredientsFetchTask extends AsyncTask<String, Void, IngredientsItem[]> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            //.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected IngredientsItem[] doInBackground(String... strings) {
-            String steps = strings[0];
-            //   Log.d("initial steps", steps);
-
-
-            JSONArray jsonArray;
-            try {
-                jsonArray = new JSONArray(steps);
-
-                ingredientsStepsArray = new IngredientsItem[jsonArray.length()];
-                //    Log.d("resultStepsArray", ingredientsStepsArray.toString());
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-
-                    JSONObject object = jsonArray.getJSONObject(i);
-                    //   Log.d("stepsjsonObject", object.toString());
-
-                    int sQuantity = object.optInt("quantity");
-                    String sMeasure = object.optString("measure");
-                    String sIngredient = object.optString("ingredient");/*
-                    Log.d("menow", sId + sDescription + sShortDescription + sVideoUrl + sThumbnailUrl);*/
-
-                    ingredientsSteps = new IngredientsItem();
-                    ingredientsSteps.setIngredient(sIngredient);
-                    ingredientsSteps.setMeasure(sMeasure);
-                    ingredientsSteps.setQuantity(sQuantity);
-
-                    ingredientsStepsArray[i] = ingredientsSteps;
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return ingredientsStepsArray;
-        }
-
-
-        @Override
-        protected void onPostExecute(IngredientsItem[] ingredientsItems) {
-            new IngredientsFetchTask().cancel(true);
-
-            if (ingredientsItems != null) {
-                for (IngredientsItem ingredientsItem : ingredientsItems) {
-
-                    ingredientsTextView = Objects.requireNonNull(getView()).findViewById(R.id.rv_ingredients);
-                    String formerText = ingredientsTextView.getText().toString();
-                    String quantity = String.valueOf(ingredientsItem.getQuantity());
-                    String measure = ingredientsItem.getMeasure();
-                    String ingredient = ingredientsItem.getIngredient();
-                    ingredientsTextView.setText(formerText + "\n" + quantity + " " + measure + " " + ingredient);
-
-
-                    /*  Log.d("onposteecute", recipes.toString());*/
-
-                    /* mStepsRecyclerView.setVisibility(View.VISIBLE);*/
-
-               /* stepsAdapter = new StepsAdapter(stepsItems, RecipeView.this, RecipeView.this);
-                mStepsRecyclerView.setAdapter(stepsAdapter);*/
-
-               /* ingredientsAdapter = new IngredientsAdapter(ingredientsItemss, MainActivity.this, MainActivity.this);
-                mRecipeRecyclerView.setAdapter(recipeAdapter);*/
-                    //  Log.d("recipeAdapter", stepsAdapter.toString());
-                }
-            } else {
-                Log.e("tag", "onPostExecute recipes is empty");
-            }
-        }
-
-
-    }
-
-    public class StepsFetchTask extends AsyncTask<String, Void, StepsItem[]> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            //  mStepsRecyclerView.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected StepsItem[] doInBackground(String... strings) {
-            String steps = strings[0];
-
-            JSONArray jsonArray;
-            try {
-                jsonArray = new JSONArray(steps);
-
-                resultStepsArray = new StepsItem[jsonArray.length()];
-                //Log.d("resultStepsArray", resultStepsArray.toString());
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-
-                    JSONObject object = jsonArray.getJSONObject(i);
-                    // Log.d("stepsjsonObject", object.toString());
-
-                    int sId = object.optInt("id");
-                    String sDescription = object.optString("description");
-                    String sShortDescription = object.optString("shortDescription");
-                    String sVideoUrl = object.optString("videoURL");
-                    String sThumbnailUrl = object.optString("thumbnailURL");
-                    //Log.d("menow", sId + sDescription + sShortDescription + sVideoUrl + sThumbnailUrl);
-
-                    resultSteps = new StepsItem();
-                    resultSteps.setDescription(sDescription);
-                    resultSteps.setId(sId);
-                    resultSteps.setShortDescription(sShortDescription);
-                    if (sVideoUrl != null) {
-                        resultSteps.setThumbnailURL(sThumbnailUrl);
-                    }
-                    resultSteps.setVideoURL(sVideoUrl);
-
-                    // Log.d("resultsteps", resultSteps.toString());
-                    resultStepsArray[i] = resultSteps;
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return resultStepsArray;
-        }
-
-
-        @Override
-        protected void onPostExecute(StepsItem[] stepsItems) {
-            new StepsFetchTask().cancel(true);
-            // Log.d("mewow", stepsItems.toString());
-            if (stepsItems != null) {
-               /* for (int i = 0; i < stepsItems.length; i++) {
-                    Log.d("going to stepsAdapter", stepsItems[i].getDescription());
-                }*/
-
-
-                stepsRecyclerView = Objects.requireNonNull(getActivity()).findViewById(R.id.rv_steps);
-                stepsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
-                stepsAdapter = new StepsAdapter(stepsItems, StepDetailFragment.this);
-                stepsRecyclerView.setAdapter(stepsAdapter);
-
-               /* ingredientsAdapter = new IngredientsAdapter(ingredientsItemss, MainActivity.this, MainActivity.this);
-                mRecipeRecyclerView.setAdapter(recipeAdapter);*/
-                // Log.d("recipeAdapter", stepsAdapter.toString());
-
-                TextView servingsTextView = getActivity().findViewById(R.id.rv_servings);
-                servingsTextView.setText(servings);
-            } else {
-                Log.e("tag", "onPostExecute recipes is empty");
-            }
-        }
-
-
-    }
 }

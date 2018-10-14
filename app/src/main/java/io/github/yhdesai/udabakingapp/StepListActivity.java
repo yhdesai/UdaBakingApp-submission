@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,14 +72,30 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         String videoUrl = resultStepsArray[position].getVideoURL();
         String thumbnailUrl = resultStepsArray[position].getThumbnailURL();
 
+      /*  if (findViewById(R.id.step_detail_container != null)) {
+            Log.d("test", "step detail container present");
+        }
+*/
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        if (mTwoPane) {
+        float yInches = metrics.heightPixels / metrics.ydpi;
+        float xInches = metrics.widthPixels / metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+        if (diagonalInches >= 6.5) {
+
+
             Log.d("mTwoPane", "steps mTwoPane Detected");
 
-            //Stash.put("recipe_to_frag_tab", item);
+
+            Stash.put("shortDescription", shortDescription);
+            Stash.put("description", description);
+            Stash.put("id", String.valueOf(id));
+            Stash.put("videoUrl", videoUrl);
+            Stash.put("thumbnailUrl", thumbnailUrl);
             StepDetailFragment fragment = new StepDetailFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.step_detail_container, fragment)
+                    .replace(step_detail_container, fragment)
                     .commit();
 
 
@@ -93,81 +110,6 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
         }
     }
-/*
-    public class RecipeAdapters
-            extends RecyclerView.Adapter<RecipeAdapters.ViewHolder> {
-
-        private final StepListActivity mParentActivity;
-        private final boolean mTwoPane;
-        *//*private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Recipe item = (Recipe) view.getTag();
-                if (mTwoPane) {
-                    // Bundle arguments = new Bundle();
-                    // arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item);
-                    Stash.put("recipe_to_frag_tab", item);
-                    StepDetailFragment fragment = new StepDetailFragment();
-                    //  fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.step_detail_container, fragment)
-                            .commit();
-                    Stash.put("mTwoPane", mTwoPane);
-                } else {
-                    Context context = view.getContext();
-                    Recipe recipe = (Recipe) view.getTag();
-                    Intent intent = new Intent(context, StepDetailActivity.class);
-                    intent.putExtra("MyClass", recipe);
-                    context.startActivity(intent);
-                    Stash.put("mTwoPane", mTwoPane);
-                }
-            }
-        };*//*
-        private Recipe[] mRecipe;
-
-
-        RecipeAdapters(StepListActivity parent,
-                       Recipe[] recipe,
-                       boolean twoPane) {
-            mRecipe = recipe;
-            mParentActivity = parent;
-            mTwoPane = twoPane;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.step_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            Recipe recipe1234 = mRecipe[position];
-            String text = recipe1234.getName();
-            holder.mContentView.setText(text);
-            holder.itemView.setTag(mRecipe[position]);
-            //   holder.itemView.setOnClickListener(mOnClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mRecipe.length;
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mContentView;
-
-            ViewHolder(View view) {
-                super(view);
-                mContentView = view.findViewById(R.id.item_step_title);
-            }
-        }
-
-
-    }*/
-
 
     public class StepsFetchTasks extends AsyncTask<String, Void, StepsItem[]> {
         @Override

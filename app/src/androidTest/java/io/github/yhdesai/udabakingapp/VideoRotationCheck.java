@@ -72,7 +72,7 @@ public class VideoRotationCheck {
         }
 
         ViewInteraction recyclerView2 = onView(
-                allOf(withId(R.id.rv_stepss),
+                allOf(withId(R.id.rv_stepsss),
                         childAtPosition(
                                 withClassName(is("android.support.design.widget.CoordinatorLayout")),
                                 3)));
