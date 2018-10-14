@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,56 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.fxn.stash.Stash;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-
-import io.github.yhdesai.udabakingapp.data.IngredientsItem;
 import io.github.yhdesai.udabakingapp.data.Recipe;
 import io.github.yhdesai.udabakingapp.data.StepsItem;
-import io.github.yhdesai.udabakingapp.utils.GetHTTPResponse;
 
-/**
- * An activity representing a list of Recipes. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link RecipeDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
+
 public class StepListActivity extends AppCompatActivity implements StepsAdapter.StepsClickListener {
 
     Recipe[] result12s;
-    Recipe recipe234s;
-    RecipeAdapters recipeAdapter;
-
-    private IngredientsItem[] ingredientsStepsArray;
-    private IngredientsItem ingredientsSteps;
-    private TextView ingredientsTextView;
-
     private StepsItem[] resultStepsArray;
     private StepsItem resultSteps;
     private StepsAdapter stepsAdapter;
-
-    private String specialString;
-
-    private Parcelable listState;
-
     String servings;
-
     private RecyclerView stepsRecyclerView;
-    /**
-     * -----------------------
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     private boolean mTwoPane;
 
     @Override
@@ -86,11 +52,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             mTwoPane = true;
         }
 
-      /*  View recyclerView = findViewById(R.id.recipe_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);*/
-        String uris = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-        new RecipeFetchTasks().execute(uris);
+
         String stepss = Stash.getString("steps");
         new StepsFetchTasks().execute(stepss);
     }
@@ -128,21 +90,20 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                 if (mTwoPane) {
                     // Bundle arguments = new Bundle();
                     // arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item);
-                    //TODO Fix this code here,,  fixed it but gonna leave this todo here as a mark for future
                     Stash.put("recipe_to_frag_tab", item);
                     StepDetailFragment fragment = new StepDetailFragment();
                     //  fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.step_detail_container, fragment)
                             .commit();
+                    Stash.put("mTwoPane", mTwoPane);
                 } else {
                     Context context = view.getContext();
-
                     Recipe recipe = (Recipe) view.getTag();
                     Intent intent = new Intent(context, StepDetailActivity.class);
-
                     intent.putExtra("MyClass", recipe);
                     context.startActivity(intent);
+                    Stash.put("mTwoPane", mTwoPane);
                 }
             }
         };
@@ -167,14 +128,9 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            //  holder.mIdView.setText(mValues.get(position).id);
             Recipe recipe1234 = mRecipe[position];
-
             String text = recipe1234.getName();
             holder.mContentView.setText(text);
-
-//            holder.mContentView.setText(mRecipe.get(position).content);
-
             holder.itemView.setTag(mRecipe[position]);
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -183,102 +139,11 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         public int getItemCount() {
             return mRecipe.length;
         }
-
         class ViewHolder extends RecyclerView.ViewHolder {
-            // final TextView mIdView;
             final TextView mContentView;
-
             ViewHolder(View view) {
                 super(view);
-                //mIdView = (TextView) view.findViewById(R.id.id_text);
                 mContentView = view.findViewById(R.id.item_step_title);
-            }
-        }
-
-
-    }
-
-    public class RecipeFetchTasks extends AsyncTask<String, Void, Recipe[]> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            // mRecipeRecyclerView.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected Recipe[] doInBackground(String... strings) {
-            String uri = strings[0];
-            URL url = GetHTTPResponse.parseUrl(uri);
-
-            try {
-                String result = GetHTTPResponse.getResponseFromHttpVideo(url);
-                JSONArray jsonArray = new JSONArray(result);
-                result12s = new Recipe[jsonArray.length()];
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    JSONObject object = jsonArray.getJSONObject(i);
-
-                    int id = object.optInt("id");
-                    String name = object.optString("name");
-                    String image = object.optString("image");
-                    String ingredients = object.getString("ingredients");
-                    int servings = object.getInt("servings");
-                    String steps = object.getString("steps");
-
-                 /*   Log.d("RESULTED IN",
-                            String.valueOf(id) + "\n " +
-                                    name + "\n " +
-                                    image + "\n " +
-                                    ingredients + "\n " +
-                                    String.valueOf(servings) + "\n " +
-                                    steps);*/
-
-                    recipe234s = new Recipe();
-
-                    recipe234s.setName(name);
-                    recipe234s.setImage(image);
-                    recipe234s.setId(id);
-                    recipe234s.setIngredients(ingredients);
-                    recipe234s.setServings(String.valueOf(servings));
-                    recipe234s.setSteps(steps);
-
-
-                    result12s[i] = recipe234s;
-
-                }
-            } catch (JSONException | IOException e1) {
-                e1.printStackTrace();
-            }
-
-
-            return result12s;
-        }
-
-        @Override
-        protected void onPostExecute(Recipe[] recipes) {
-            new RecipeFetchTasks().cancel(true);
-            if (recipes != null) {
-
-              //  View recyclerView = findViewById(R.id.stepss_list);
-                View recyclerView = findViewById(R.id.rv_stepsss);
-                assert recyclerView != null;
-                setupRecyclerView((RecyclerView) recyclerView);
-
-
-                /*  Log.d("onposteecute", recipes.toString());*/
-
-                //  mRecipeRecyclerView.setVisibility(View.VISIBLE);
-
-             /*   recipeAdapter = new RecipeAdapter(recipes, MainActivity.this, MainActivity.this);
-                mRecipeRecyclerView.setAdapter(recipeAdapter);
-*/
-
-                //   Log.d("recipeAdapter", recipeAdapter.toString());
-            } else {
-                Log.e("tag", "onPostExecute recipes is empty");
             }
         }
 
@@ -287,38 +152,28 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
 
 
     public class StepsFetchTasks extends AsyncTask<String, Void, StepsItem[]> {
-
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-            //  mStepsRecyclerView.setVisibility(View.INVISIBLE);
-        }
+   }
 
         @Override
         protected StepsItem[] doInBackground(String... strings) {
             String steps = strings[0];
-
             JSONArray jsonArray;
             try {
                 jsonArray = new JSONArray(steps);
-
                 resultStepsArray = new StepsItem[jsonArray.length()];
                 //Log.d("resultStepsArray", resultStepsArray.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-
                     JSONObject object = jsonArray.getJSONObject(i);
-                    // Log.d("stepsjsonObject", object.toString());
 
                     int sId = object.optInt("id");
                     String sDescription = object.optString("description");
                     String sShortDescription = object.optString("shortDescription");
                     String sVideoUrl = object.optString("videoURL");
                     String sThumbnailUrl = object.optString("thumbnailURL");
-                    //Log.d("menow", sId + sDescription + sShortDescription + sVideoUrl + sThumbnailUrl);
-
                     resultSteps = new StepsItem();
                     resultSteps.setDescription(sDescription);
                     resultSteps.setId(sId);
@@ -327,10 +182,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                         resultSteps.setThumbnailURL(sThumbnailUrl);
                     }
                     resultSteps.setVideoURL(sVideoUrl);
-
-                    // Log.d("resultsteps", resultSteps.toString());
                     resultStepsArray[i] = resultSteps;
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -338,30 +190,14 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             return resultStepsArray;
         }
 
-
         @Override
         protected void onPostExecute(StepsItem[] stepsItems) {
             new StepsFetchTasks().cancel(true);
-            // Log.d("mewow", stepsItems.toString());
             if (stepsItems != null) {
-               /* for (int i = 0; i < stepsItems.length; i++) {
-                    Log.d("going to stepsAdapter", stepsItems[i].getDescription());
-                }*/
-
-
                 stepsRecyclerView =findViewById(R.id.rv_stepsss);
                 stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
-
-
                 stepsAdapter = new StepsAdapter(stepsItems, StepListActivity.this);
                 stepsRecyclerView.setAdapter(stepsAdapter);
-
-               /* ingredientsAdapter = new IngredientsAdapter(ingredientsItemss, MainActivity.this, MainActivity.this);
-                mRecipeRecyclerView.setAdapter(recipeAdapter);*/
-                // Log.d("recipeAdapter", stepsAdapter.toString());
-
-              /*  TextView servingsTextView = findViewById(R.id.rv_servings);
-                servingsTextView.setText(servings);*/
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
             }

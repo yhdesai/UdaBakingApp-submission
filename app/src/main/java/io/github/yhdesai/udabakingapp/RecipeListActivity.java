@@ -88,7 +88,6 @@ public class RecipeListActivity extends AppCompatActivity {
                 if (mTwoPane) {
                     // Bundle arguments = new Bundle();
                     // arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, item);
-                    //TODO Fix this code here,,  fixed it but gonna leave this todo here as a mark for future
                     Stash.put("recipe_to_frag_tab", item);
                     RecipeDetailFragment fragment = new RecipeDetailFragment();
                     //  fragment.setArguments(arguments);
@@ -98,10 +97,8 @@ public class RecipeListActivity extends AppCompatActivity {
                     Stash.put("mTwoPane", mTwoPane);
                 } else {
                     Context context = view.getContext();
-
                     Recipe recipe = (Recipe) view.getTag();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-
                     intent.putExtra("MyClass", recipe);
                     context.startActivity(intent);
                     Stash.put("mTwoPane", mTwoPane);
