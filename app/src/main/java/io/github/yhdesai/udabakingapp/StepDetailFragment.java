@@ -97,10 +97,8 @@ public class StepDetailFragment extends Fragment implements StepsAdapter.StepsCl
         // mRecipe = Recipe.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         /*  Recipe mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);*/
 
-        Bundle bundle = getArguments();
-        assert bundle != null;
-        mRecipe = (Recipe) bundle.getSerializable("recipeObject");
 
+        mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
 
         /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
         Activity activity = this.getActivity();

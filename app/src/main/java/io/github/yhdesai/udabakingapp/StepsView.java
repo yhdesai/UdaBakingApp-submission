@@ -54,7 +54,7 @@ public class StepsView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_steps_view);
+     //   setContentView(R.layout.activity_steps_view);
         Video = false;
 
 

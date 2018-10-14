@@ -80,17 +80,17 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_detail_container, fragment)
                     .commit();
-            Stash.put("mTwoPane", mTwoPane);
+
 
         } else {
-            Intent intent = new Intent(StepListActivity.this, StepsView.class);
+            Intent intent = new Intent(StepListActivity.this, StepDetailActivity.class);
             intent.putExtra("id", String.valueOf(id));
             intent.putExtra("description", description);
             intent.putExtra("shortDescription", shortDescription);
             intent.putExtra("videoUrl", videoUrl);
             intent.putExtra("thumbnailUrl", thumbnailUrl);
             startActivity(intent);
-            Stash.put("mTwoPane", mTwoPane);
+
         }
     }
 /*
