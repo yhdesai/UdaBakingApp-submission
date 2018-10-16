@@ -95,7 +95,7 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             Stash.put("thumbnailUrl", thumbnailUrl);
             StepDetailFragment fragment = new StepDetailFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(step_detail_container, fragment)
+                    .replace(R.id.step_detail_container, fragment)
                     .commit();
 
 
