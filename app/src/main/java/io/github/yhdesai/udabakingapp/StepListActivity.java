@@ -11,10 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.fxn.stash.Stash;
 
@@ -41,28 +37,16 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_list);
         Stash.init(this);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-
-
-        if (findViewById(R.id.step_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
-
-
         String stepss = Stash.getString("steps");
         new StepsFetchTasks().execute(stepss);
+        if (findViewById(R.id.step_detail_container) != null) {
+            mTwoPane = true;
+        }
     }
 
-  /*  private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new RecipeAdapters(this, result12s, mTwoPane));
-    }*/
 
     @Override
     public void onClickSteps(int position) {
@@ -72,22 +56,15 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         String videoUrl = resultStepsArray[position].getVideoURL();
         String thumbnailUrl = resultStepsArray[position].getThumbnailURL();
 
-      /*  if (findViewById(R.id.step_detail_container != null)) {
-            Log.d("test", "step detail container present");
-        }
-*/
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         float yInches = metrics.heightPixels / metrics.ydpi;
         float xInches = metrics.widthPixels / metrics.xdpi;
         double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-        if (diagonalInches >= 6.5) {
-
-
+        //  if (diagonalInches >= 6.5) {
+        if (mTwoPane) {
             Log.d("mTwoPane", "steps mTwoPane Detected");
-
-
             Stash.put("shortDescription", shortDescription);
             Stash.put("description", description);
             Stash.put("id", String.valueOf(id));
@@ -97,16 +74,13 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_detail_container, fragment)
                     .commit();
-
-
         } else {
-            Intent intent = new Intent(StepListActivity.this, StepDetailActivity.class);
-            intent.putExtra("id", String.valueOf(id));
-            intent.putExtra("description", description);
-            intent.putExtra("shortDescription", shortDescription);
-            intent.putExtra("videoUrl", videoUrl);
-            intent.putExtra("thumbnailUrl", thumbnailUrl);
-            startActivity(intent);
+            Stash.put("shortDescription", shortDescription);
+            Stash.put("description", description);
+            Stash.put("id", String.valueOf(id));
+            Stash.put("videoUrl", videoUrl);
+            Stash.put("thumbnailUrl", thumbnailUrl);
+            startActivity(new Intent(StepListActivity.this, StepDetailActivity.class));
 
         }
     }
@@ -124,11 +98,8 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             try {
                 jsonArray = new JSONArray(steps);
                 resultStepsArray = new StepsItem[jsonArray.length()];
-                //Log.d("resultStepsArray", resultStepsArray.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
-
                     JSONObject object = jsonArray.getJSONObject(i);
-
                     int sId = object.optInt("id");
                     String sDescription = object.optString("description");
                     String sShortDescription = object.optString("shortDescription");
@@ -162,8 +133,6 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                 Log.e("tag", "onPostExecute recipes is empty");
             }
         }
-
-
     }
 
 }

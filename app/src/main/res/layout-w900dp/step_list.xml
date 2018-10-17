@@ -10,6 +10,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
+    android:background="#638"
     tools:context=".StepListActivity">
 
     <!--
@@ -26,6 +27,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:background="@color/colorPrimary"
         app:layoutManager="LinearLayoutManager"
         tools:context="io.github.yhdesai.udabakingapp.StepListActivity"
         tools:listitem="@layout/step_list_content" />

@@ -1,15 +1,10 @@
 package io.github.yhdesai.udabakingapp;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.fxn.stash.Stash;
 import com.google.android.exoplayer2.C;
@@ -37,11 +31,7 @@ import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Objects;
 
 import io.github.yhdesai.udabakingapp.data.IngredientsItem;
 import io.github.yhdesai.udabakingapp.data.StepsItem;
@@ -71,16 +61,10 @@ public class StepDetailFragment extends Fragment {
     String thumbnailUrl;
 
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+
     public StepDetailFragment() {
     }
 
-   /* private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new StepsAdapter(this, resultStepsArray, null));
-    }*/
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -103,59 +87,7 @@ public class StepDetailFragment extends Fragment {
             Video = false;
             Log.d("shortdesc", shortDescription);
 
-           // TextView descriptionView = getActivity().findViewById(R.id.stepsDescription);
 
-            //     VideoView = getActivity().findViewById(R.id.videoView);
-//            VideoView.setVisibility(View.GONE);
-
-            //       ThumbnailView = getActivity().findViewById(R.id.thumbnailView);
-            //   ThumbnailView.setVisibility(View.GONE);
-
-
-        /*    if (!thumbnailUrl.equals("")) {
-                if (!thumbnailUrl.contains(".mp4")) {
-                    Log.d("Thumbnail", "image detected");
-                    ThumbnailView.setVisibility(View.VISIBLE);
-                    Picasso.get().load(thumbnailUrl).into(ThumbnailView);
-
-                }
-                if (thumbnailUrl.contains(".mp4")) {
-                    Log.d("Thumbnail", "thumbnail is not an image");
-
-                }
-
-            } else {
-                Log.d("Thumbnail", "thumbnail empty");
-//                ThumbnailView.setVisibility(View.GONE);
-            }
-*/
-/*
-            if (!videoUrl.equals("")) {
-                Log.d("Thattt Video", videoUrl);
-                uri = Uri.parse(videoUrl);
-                //      VideoView.setVisibility(View.VISIBLE);
-                Video = true;
-                initPlayer();
-            } else {
-                Video = false;
-                //    VideoView.setVisibility(View.GONE);
-
-            }*/
-            /*  idView.setText(ids);*/
-//            descriptionView.setText(description);
-
-/*
-            if (savedInstanceState != null) {
-                long position = savedInstanceState.getLong("position");
-                initPlayer();
-                if (position != C.TIME_UNSET) player.seekTo(position);
-
-
-                boolean isPlayWhenReady = savedInstanceState.getBoolean("playerState");
-                player.setPlayWhenReady(isPlayWhenReady);
-
-
-            }*/
         }
 
 

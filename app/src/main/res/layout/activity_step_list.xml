@@ -30,15 +30,12 @@
         <include layout="@layout/step_list" />
     </FrameLayout>
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="test"/>
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_stepsss"
         android:layout_width="match_parent"
+        android:background="#118"
         android:layout_height="wrap_content" />
 
 </android.support.design.widget.CoordinatorLayout>
