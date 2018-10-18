@@ -12,12 +12,8 @@
     android:showDividers="middle"
     tools:context=".RecipeListActivity">
 
-    <!--
-    This layout is a two-pane layout for the Recipes
-    master/detail flow.
-    
-    -->
 
+    
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/recipe_list"
