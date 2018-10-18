@@ -41,27 +41,31 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         String stepss = Stash.getString("steps");
-        new StepsFetchTasks().execute(stepss);
+
+
         if (findViewById(R.id.step_detail_container) != null) {
             mTwoPane = true;
         }
+
+        new StepsFetchTasks().execute(stepss);
     }
 
 
     @Override
     public void onClickSteps(int position) {
+        Log.d("step clicked", String.valueOf(position));
         String shortDescription = resultStepsArray[position].getShortDescription();
         String description = resultStepsArray[position].getDescription();
         int id = resultStepsArray[position].getId();
         String videoUrl = resultStepsArray[position].getVideoURL();
         String thumbnailUrl = resultStepsArray[position].getThumbnailURL();
 
-        DisplayMetrics metrics = new DisplayMetrics();
+      /*  DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         float yInches = metrics.heightPixels / metrics.ydpi;
         float xInches = metrics.widthPixels / metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);*/
         //  if (diagonalInches >= 6.5) {
         if (mTwoPane) {
             Log.d("mTwoPane", "steps mTwoPane Detected");
@@ -70,9 +74,8 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
             Stash.put("id", String.valueOf(id));
             Stash.put("videoUrl", videoUrl);
             Stash.put("thumbnailUrl", thumbnailUrl);
-            StepDetailFragment fragment = new StepDetailFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.step_detail_container, fragment)
+                    .replace(R.id.step_detail_container, new StepDetailFragment())
                     .commit();
         } else {
             Stash.put("shortDescription", shortDescription);
