@@ -39,13 +39,7 @@ import io.github.yhdesai.udabakingapp.data.StepsItem;
 
 public class StepDetailFragment extends Fragment {
 
-    private IngredientsItem[] ingredientsStepsArray;
-    private IngredientsItem ingredientsSteps;
-    private TextView ingredientsTextView;
-    private StepsItem[] resultStepsArray;
-    private StepsItem resultSteps;
-    private StepsAdapter stepsAdapter;
-    private String specialString;
+
     private SimpleExoPlayer player;
     public String videoUrl;
     private Parcelable listState;
@@ -67,11 +61,20 @@ public class StepDetailFragment extends Fragment {
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d("onSaveInstance", savedInstanceState.toString());
 
+        if (Video = true) {
+            Log.d("The Player", player.toString());
+            long position = player.getCurrentPosition();
+            savedInstanceState.putLong("position", position);
 
+            boolean isPlayWhenReady = player.getPlayWhenReady();
+            savedInstanceState.putBoolean("playerState", isPlayWhenReady);
+        }
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,10 @@ public class StepDetailFragment extends Fragment {
 
             Video = false;
             Log.d("shortdesc", shortDescription);
+            Log.d("description", description);
+            Log.d("id", id);
+            Log.d("videoUrl", videoUrl);
+            Log.d("thumbnailUrl", thumbnailUrl);
 
 
         }
@@ -107,6 +114,11 @@ public class StepDetailFragment extends Fragment {
         thumbnailUrl = Stash.getString("thumbnailUrl");
 
         Log.d("shortdesc", shortDescription);
+        Log.d("description", description);
+        Log.d("id", id);
+        Log.d("videoUrl", videoUrl);
+        Log.d("thumbnailUrl", thumbnailUrl);
+
         Video = false;
 
 
@@ -140,12 +152,13 @@ public class StepDetailFragment extends Fragment {
         if (!videoUrl.equals("")) {
             Log.d("Thattt Video", videoUrl);
             uri = Uri.parse(videoUrl);
-            //      VideoView.setVisibility(View.VISIBLE);
+            VideoView.setVisibility(View.VISIBLE);
             Video = true;
-            initPlayer();
+            initPlayer(uri);
         } else {
             Video = false;
-            //    VideoView.setVisibility(View.GONE);
+            Log.d("Thattt Video", "Video empty");
+            VideoView.setVisibility(View.GONE);
 
         }
         /*  idView.setText(ids);*/
@@ -153,22 +166,18 @@ public class StepDetailFragment extends Fragment {
 
 
         if (savedInstanceState != null) {
+            Log.d("savedInstance", "savedINstance Detected");
             long position = savedInstanceState.getLong("position");
-            initPlayer();
+            initPlayer(uri);
             if (position != C.TIME_UNSET) player.seekTo(position);
-
 
             boolean isPlayWhenReady = savedInstanceState.getBoolean("playerState");
             player.setPlayWhenReady(isPlayWhenReady);
-
-
         }
-
-
         return rootView;
     }
 
-    private void initPlayer() {
+    private void initPlayer(Uri uri) {
         // 1. Create a default TrackSelector
         Handler mainHandler = new Handler();
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();

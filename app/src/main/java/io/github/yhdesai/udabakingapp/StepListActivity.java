@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 
 import com.fxn.stash.Stash;
 
@@ -78,11 +79,13 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
                     .replace(R.id.step_detail_container, new StepDetailFragment())
                     .commit();
         } else {
-            Stash.put("shortDescription", shortDescription);
-            Stash.put("description", description);
-            Stash.put("id", String.valueOf(id));
-            Stash.put("videoUrl", videoUrl);
-            Stash.put("thumbnailUrl", thumbnailUrl);
+            //temp tostring method, remove it
+            Log.d("mTwoPane", "non step deteted");
+            Stash.put("shortDescription", shortDescription.toString());
+            Stash.put("description", description.toString());
+            Stash.put("id", String.valueOf(id).toString());
+            Stash.put("videoUrl", videoUrl.toString());
+            Stash.put("thumbnailUrl", thumbnailUrl.toString());
             startActivity(new Intent(StepListActivity.this, StepDetailActivity.class));
 
         }
@@ -128,10 +131,22 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
         protected void onPostExecute(StepsItem[] stepsItems) {
             new StepsFetchTasks().cancel(true);
             if (stepsItems != null) {
-                stepsRecyclerView = findViewById(R.id.rv_stepsss);
-                stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
-                stepsAdapter = new StepsAdapter(stepsItems, StepListActivity.this);
-                stepsRecyclerView.setAdapter(stepsAdapter);
+                //  stepsRecyclerView = findViewById(R.id.rv_stepsss);
+                stepsRecyclerView = findViewById(R.id.step_list);
+                if (stepsRecyclerView != null) {
+                    RecyclerView rv = findViewById(R.id.rv_stepsss);
+                    rv.setVisibility(View.GONE);
+                    stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
+                    stepsAdapter = new StepsAdapter(stepsItems, StepListActivity.this);
+                    stepsRecyclerView.setAdapter(stepsAdapter);
+                } else {
+                    stepsRecyclerView = findViewById(R.id.rv_stepsss);
+                    RecyclerView rv = findViewById(R.id.rv_stepsss);
+                    rv.setVisibility(View.VISIBLE);
+                    stepsRecyclerView.setLayoutManager(new LinearLayoutManager(StepListActivity.this));
+                    stepsAdapter = new StepsAdapter(stepsItems, StepListActivity.this);
+                    stepsRecyclerView.setAdapter(stepsAdapter);
+                }
             } else {
                 Log.e("tag", "onPostExecute recipes is empty");
             }
@@ -139,3 +154,5 @@ public class StepListActivity extends AppCompatActivity implements StepsAdapter.
     }
 
 }
+
+
