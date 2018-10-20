@@ -55,9 +55,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
     }
 
 
-
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -79,10 +76,18 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
 
-        float yInches = metrics.heightPixels / metrics.ydpi;
-        float xInches = metrics.widthPixels / metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-        if (diagonalInches >= 6.5) {
+        if (getActivity().findViewById(R.id.step_detail_container) != null) {
+            mTwoPane = true;
+        }
+        else{
+            mTwoPane = false;
+        }
+
+    //    float yInches = metrics.heightPixels / metrics.ydpi;
+   //     float xInches = metrics.widthPixels / metrics.xdpi;
+     //   double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+     //   if (diagonalInches >= 6.5) {
+        if(mTwoPane){
             //TAB ONLY
             mRecipe = (Recipe) Stash.getObject("recipe_to_frag_tab", Recipe.class);
             if (mRecipe != null) {
@@ -107,28 +112,30 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         /*mRecipe = (Recipe) bundle.getSerializable("recipeObject");*/
         Activity activity = this.getActivity();
         assert activity != null;
+        if (mRecipe != null) {
+            String name = mRecipe.getName();
+            int id = mRecipe.getId();
+            String image = mRecipe.getImage();
 
-        String name = mRecipe.getName();
-        int id = mRecipe.getId();
-        String image = mRecipe.getImage();
+            servings = mRecipe.getServings();
+            //   Log.d("THIIIs", servings);
+            String ingredients = mRecipe.getIngredients();
 
-        servings = mRecipe.getServings();
-        //   Log.d("THIIIs", servings);
-        String ingredients = mRecipe.getIngredients();
+            String steps = mRecipe.getSteps();
 
-        String steps = mRecipe.getSteps();
+            Log.d("The Activity", activity.toString());
+            if (steps != null) {
+                Stash.put("steps", steps);
+                new StepsFetchTask().execute(steps);
+            }
+            if (ingredients != null) {
+                new IngredientsFetchTask().execute(ingredients);
+            }
 
-        Log.d("The Activity", activity.toString());
-        if (steps != null) {
-            Stash.put("steps", steps);
-            new StepsFetchTask().execute(steps);
+
+        } else {
+            Log.d("RecipeDetailFragment", "mRecie is empty");
         }
-        if (ingredients != null) {
-            new IngredientsFetchTask().execute(ingredients);
-        }
-
-
-
     }
 
 
@@ -152,16 +159,13 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             steps = recipe.getSteps();
 
 
-
-
-
             ImageView recipe_detail = rootView.findViewById(R.id.recipe_detail_image);
 
             if (!image.isEmpty()) {
                 Log.d("image", image);
                 Picasso.get().load(image).into(recipe_detail);
             }
-              TextView servingsTextView = rootView.findViewById(R.id.rv_servings);
+            TextView servingsTextView = rootView.findViewById(R.id.rv_servings);
             servingsTextView.setText(servings);
 
 
@@ -169,7 +173,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
             new IngredientsFetchTask().execute(ingredients);
         }
 
-       Button mhheButtonn = rootView.findViewById(R.id.meowButton);
+        Button mhheButtonn = rootView.findViewById(R.id.meowButton);
         mhheButtonn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
@@ -199,12 +203,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
         intent.putExtra("thumbnailUrl", thumbnailUrl);
         startActivity(intent);
     }
-
-
-
-
-
-
 
 
     public class IngredientsFetchTask extends AsyncTask<String, Void, IngredientsItem[]> {
@@ -268,7 +266,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.Steps
                     String measure = ingredientsItem.getMeasure();
                     String ingredient = ingredientsItem.getIngredient();
                     ingredientsTextView.setText(formerText + "\n" + quantity + " " + measure + " " + ingredient);
-
 
 
                 }
